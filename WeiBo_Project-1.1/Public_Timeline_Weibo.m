@@ -43,7 +43,8 @@
         [WeiboDataBase createWeiboTable];
         [WeiboDataBase addWithWeibo:_publicWeiboContex];
     }
-    
+
+#warning 需要将那些数据写入数据库
     //TODO: 判断哪些微博是需要加入数据库的
     //仅仅需要将当前页面显示的微博都加入数据中，不需要所有的微博
     
