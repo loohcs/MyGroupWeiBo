@@ -101,14 +101,14 @@
         
         NSDictionary *dic = [rs resultDictionary];
         
-         NSLog(@"----------------------- DB Dic-----------------------%@", dic);
+         //NSLog(@"----------------------- DB Dic-----------------------%@", dic);
         
         WeiBoContext *weibo = [[WeiBoContext alloc] initWithWeibo:dic];
         
         [array addObject:weibo];
     }
     
-    NSLog(@"----------------------- DB -----------------------%@", array);
+    //NSLog(@"----------------------- DB -----------------------%@", array);
     
     [db close];
     

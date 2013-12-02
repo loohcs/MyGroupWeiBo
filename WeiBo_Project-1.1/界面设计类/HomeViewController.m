@@ -8,7 +8,7 @@
 
 #import "HomeViewController.h"
 #import "WriteViewController.h"
-#import "Friends_Timeline_Weibo.h"
+
 @interface HomeViewController ()
 
 @end
@@ -28,16 +28,78 @@
 {
     [super viewDidLoad];
     
-    self.view.backgroundColor = [UIColor lightGrayColor];
+    middleFlag = 0;
+    rightFlag = 0;
+    flag = 0;
+    middleTableV=[[UITableView alloc]initWithFrame:CGRectMake(110, 0, 100, 120) style:UITableViewStyleGrouped];
+    rightTableV = [[UITableView alloc] initWithFrame:CGRectMake(230, 0, 80, 100) style:UITableViewStyleGrouped];
     
-//    friendWeibo = [[Friends_Timeline_Weibo alloc] init];
-//    [friendWeibo getFriendsTimelineWeibo];
+    self.view.backgroundColor = [UIColor lightGrayColor];
     
     //创建左右button和中间标题栏
     [self initWithButtonAndTitle];
     self.navigationItem.title = @"";
     
+    
+    weiboView = [[WeiboView alloc] initWithFrame:CGRectMake(0, 0, 320, 508)];
+    [self getTimelineWeibo:@"statuses_friends_timeline"];
+    //    [weiboView initWithTabelView];
+    [self.view addSubview:weiboView];
+    
 }
+
+#pragma mark -- 获取最新的微博，以及将微博内容显示出来
+- (void)getTimelineWeibo:(NSString *)type
+{
+    NSLog(@"%s", __func__);
+    if ([type isEqualToString:@"statuses_friends_timeline"])
+    {
+        NSDictionary *dic = [[NSDictionary alloc] initWithObjectsAndKeys:@"0",@"since_id", @"0", @"max_id", @"100",@"count", @"1", @"page", @"0", @"base_app", @"0",@"feature", @"0", @"trim_user", nil];
+        statuses = [[WBHTTP_Request_Block alloc] initWithURlString:STATUSES_FRIENDS_TIMELINES andArguments:dic];
+        NSLog(@"%@", STATUSES_FRIENDS_TIMELINES);
+    }
+    if ([type isEqualToString:@"statuses_public_timeline"]) {
+        NSDictionary *dic = [[NSDictionary alloc] initWithObjectsAndKeys:@"100",@"count", nil];
+        statuses = [[WBHTTP_Request_Block alloc] initWithURlString:STATUSES_PUBLIC_TIMELINE andArguments:dic];
+        NSLog(@"%@", STATUSES_PUBLIC_TIMELINE);
+    }
+    
+    __weak HomeViewController *homeVC = self;
+    [WeiboDataBase createWeiboTable];
+    [statuses setBlock:^(NSMutableData *datas, float progressNum)
+     {
+         [homeVC getWeiboContex:datas];
+     }];
+    
+    [WeiboDataBase findAll];
+}
+
+- (void)getWeiboContex:(NSData *)data
+{
+    NSLog(@"%s", __func__);
+    NSError *error = nil;
+    NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
+    NSArray *weiboArr = [NSArray arrayWithArray:[dic objectForKey:@"statuses"]];
+    NSMutableArray *array = [[NSMutableArray alloc] init];
+    [WeiboDataBase createWeiboTable];
+    for (int i = 0; i < 10; i++) {
+        NSDictionary *weiboDic = [NSDictionary dictionaryWithDictionary:[weiboArr objectAtIndex:i]];
+        WeiBoContext *oneWeiboContex = [[WeiBoContext alloc] initWithWeibo:weiboDic];
+        [array addObject:oneWeiboContex.text];
+        
+    }
+    
+    weiboView.textArray = [[NSArray alloc] initWithArray:array];
+    [weiboView initWithTabelView];
+    
+    //TODO: 判断哪些微博是需要加入数据库的
+    //仅仅需要将当前页面显示的微博都加入数据中，不需要所有的微博
+    
+    [WeiboDataBase findAll];
+}
+
+
+
 #pragma initWithButtonAndTitle
 -(void)initWithButtonAndTitle
 {
@@ -98,12 +160,40 @@
 -(void)middleButtonAction
 {
 //    _array = [[NSMutableArray array] initWithObjects:@"首页",@"好友圈",@"我的微博",@"周边微博", @"特别关注",@"同事",@"名人明星",@"同学",@"悄悄关注",@"智能排行",nil];
-    
-    middleTableV=[[UITableView alloc]initWithFrame:CGRectMake(110, 0, 100, 150) style:UITableViewStyleGrouped];
+
 //    middleTableV.rowHeight=10;
 //    middleTableV.delegate=self;
 //    middleTableV.dataSource=self;
-    [self.view addSubview:middleTableV];
+    
+    NSString *path = [[NSBundle mainBundle] pathForResource:@"popover_background_os7@2x" ofType:@"png"];
+    UIImage *image = [UIImage imageWithContentsOfFile:path];
+    UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(100, 0, 100, 120)];
+    imageView.image = image;
+    [middleTableV setBackgroundView:imageView];
+    
+    //中间的弹出框与右边的弹出框相互斥
+    if (middleFlag == 0 && flag == 0) {
+        [self.view addSubview:middleTableV];
+        middleFlag = 1;
+        flag = 1;
+    }
+    else
+        if (middleFlag == 0 && flag == 1)
+        {
+            [rightTableV removeFromSuperview];
+            rightFlag = 0;
+            [self.view addSubview:middleTableV];
+            middleFlag = 1;
+            
+        }
+        else
+            if(middleFlag == 1)
+            {
+                [middleTableV removeFromSuperview];
+                middleFlag = 0;
+                flag = 0;
+            }
+
 }
 //-(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 //{
@@ -123,8 +213,32 @@
 
 -(void)rightButtonAction
 {
-    rightTableV = [[UITableView alloc] initWithFrame:CGRectMake(230, 0, 80, 100) style:UITableViewStyleGrouped];
-    [self.view addSubview:rightTableV];
+    NSString *path = [[NSBundle mainBundle] pathForResource:@"popover_background_os7@2x" ofType:@"png"];
+    UIImage *image = [UIImage imageWithContentsOfFile:path];
+    UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(230, 0, 80, 100)];
+    imageView.image = image;
+    [rightTableV setBackgroundView:imageView];
+    
+    if (rightFlag == 0 && flag == 0) {
+        [self.view addSubview:rightTableV];
+        rightFlag = 1;
+        flag = 1;
+    }
+    else
+        if (rightFlag == 0 && flag == 1) {
+            [middleTableV removeFromSuperview];
+            middleFlag = 0;
+            [self.view addSubview:rightTableV];
+            rightFlag = 1;
+            
+        }
+        else
+            if(rightFlag == 1)
+            {
+                [rightTableV removeFromSuperview];
+                rightFlag = 0;
+                flag = 0;
+            }
 }
 
 - (void)didReceiveMemoryWarning

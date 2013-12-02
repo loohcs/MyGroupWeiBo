@@ -7,15 +7,7 @@
 //
 
 #import "CustomTabbarController.h"
-#import "HomeViewController.h"
-#import "MessageViewController.h"
-#import "PersonalViewController.h"
-#import "SquareViewController.h"
-#import "MoreViewController.h"
-#import "BaseNavigationViewController.h"
 
-#import "Public_Timeline_Weibo.h"
-#import "Friends_Timeline_Weibo.h"
 
 @interface CustomTabbarController ()
 

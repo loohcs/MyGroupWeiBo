@@ -47,7 +47,7 @@
     NSLog(@"%s", __func__);
     receiveData = [[NSMutableData alloc] initWithData:[result dataUsingEncoding:NSUTF8StringEncoding]];
     block_data(receiveData, 1.0f);
-    NSLog(@"%@", result);
+    //NSLog(@"%@", result);
 }
 
 //请求出错

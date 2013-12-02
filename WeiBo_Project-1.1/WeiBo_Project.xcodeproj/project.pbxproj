@@ -9,8 +9,6 @@
 /* Begin PBXBuildFile section */
 		3E9474B718473AC400C28A41 /* UserInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E9474B018473AC400C28A41 /* UserInfo.m */; };
 		3E9474B818473AC400C28A41 /* WeiBoContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E9474B218473AC400C28A41 /* WeiBoContext.m */; };
-		3E9474B918473AC400C28A41 /* Public_Timeline_Weibo.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E9474B418473AC400C28A41 /* Public_Timeline_Weibo.m */; };
-		3E9474BA18473AC400C28A41 /* Friends_Timeline_Weibo.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E9474B618473AC400C28A41 /* Friends_Timeline_Weibo.m */; };
 		3E9474C018473B4500C28A41 /* ImageDownload.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E9474BD18473B4500C28A41 /* ImageDownload.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		3E9474C118473B4500C28A41 /* WBHTTP_Request_Block.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E9474BF18473B4500C28A41 /* WBHTTP_Request_Block.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		3E9474C618473B9900C28A41 /* Emotions.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E9474C518473B9900C28A41 /* Emotions.m */; };
@@ -2774,6 +2772,14 @@
 		3EE8A6B6184C14F300C2AA02 /* Privacy.m in Sources */ = {isa = PBXBuildFile; fileRef = 3EE8A6AF184C14F300C2AA02 /* Privacy.m */; };
 		3EE8A6B7184C14F300C2AA02 /* Remind.m in Sources */ = {isa = PBXBuildFile; fileRef = 3EE8A6B1184C14F300C2AA02 /* Remind.m */; };
 		3EE8A6B8184C14F300C2AA02 /* Url_short.m in Sources */ = {isa = PBXBuildFile; fileRef = 3EE8A6B3184C14F300C2AA02 /* Url_short.m */; };
+		3EE8A6EB184C890E00C2AA02 /* TQRichTextBaseRun.m in Sources */ = {isa = PBXBuildFile; fileRef = 3EE8A6DE184C890E00C2AA02 /* TQRichTextBaseRun.m */; };
+		3EE8A6EC184C890E00C2AA02 /* TQRichTextEmojiRun.m in Sources */ = {isa = PBXBuildFile; fileRef = 3EE8A6E0184C890E00C2AA02 /* TQRichTextEmojiRun.m */; };
+		3EE8A6ED184C890E00C2AA02 /* TQRichTextImageRun.m in Sources */ = {isa = PBXBuildFile; fileRef = 3EE8A6E2184C890E00C2AA02 /* TQRichTextImageRun.m */; };
+		3EE8A6EE184C890E00C2AA02 /* TQRichTextURLRun.m in Sources */ = {isa = PBXBuildFile; fileRef = 3EE8A6E4184C890E00C2AA02 /* TQRichTextURLRun.m */; };
+		3EE8A6EF184C890E00C2AA02 /* TQRichTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3EE8A6E6184C890E00C2AA02 /* TQRichTextView.m */; };
+		3EE8A6F0184C890E00C2AA02 /* WeiboCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3EE8A6E8184C890E00C2AA02 /* WeiboCell.m */; };
+		3EE8A6F1184C890E00C2AA02 /* WeiboView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3EE8A6EA184C890E00C2AA02 /* WeiboView.m */; };
+		3EE8A6F3184C89AC00C2AA02 /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3EE8A6F2184C89AB00C2AA02 /* CoreText.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -2781,10 +2787,6 @@
 		3E9474B018473AC400C28A41 /* UserInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserInfo.m; sourceTree = "<group>"; };
 		3E9474B118473AC400C28A41 /* WeiBoContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WeiBoContext.h; sourceTree = "<group>"; };
 		3E9474B218473AC400C28A41 /* WeiBoContext.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WeiBoContext.m; sourceTree = "<group>"; };
-		3E9474B318473AC400C28A41 /* Public_Timeline_Weibo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Public_Timeline_Weibo.h; sourceTree = "<group>"; };
-		3E9474B418473AC400C28A41 /* Public_Timeline_Weibo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Public_Timeline_Weibo.m; sourceTree = "<group>"; };
-		3E9474B518473AC400C28A41 /* Friends_Timeline_Weibo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Friends_Timeline_Weibo.h; sourceTree = "<group>"; };
-		3E9474B618473AC400C28A41 /* Friends_Timeline_Weibo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Friends_Timeline_Weibo.m; sourceTree = "<group>"; };
 		3E9474BC18473B4500C28A41 /* ImageDownload.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageDownload.h; sourceTree = "<group>"; };
 		3E9474BD18473B4500C28A41 /* ImageDownload.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageDownload.m; sourceTree = "<group>"; };
 		3E9474BE18473B4500C28A41 /* WBHTTP_Request_Block.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBHTTP_Request_Block.h; sourceTree = "<group>"; };
@@ -5595,6 +5597,21 @@
 		3EE8A6B1184C14F300C2AA02 /* Remind.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Remind.m; sourceTree = "<group>"; };
 		3EE8A6B2184C14F300C2AA02 /* Url_short.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Url_short.h; sourceTree = "<group>"; };
 		3EE8A6B3184C14F300C2AA02 /* Url_short.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Url_short.m; sourceTree = "<group>"; };
+		3EE8A6DD184C890E00C2AA02 /* TQRichTextBaseRun.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TQRichTextBaseRun.h; sourceTree = "<group>"; };
+		3EE8A6DE184C890E00C2AA02 /* TQRichTextBaseRun.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TQRichTextBaseRun.m; sourceTree = "<group>"; };
+		3EE8A6DF184C890E00C2AA02 /* TQRichTextEmojiRun.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TQRichTextEmojiRun.h; sourceTree = "<group>"; };
+		3EE8A6E0184C890E00C2AA02 /* TQRichTextEmojiRun.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TQRichTextEmojiRun.m; sourceTree = "<group>"; };
+		3EE8A6E1184C890E00C2AA02 /* TQRichTextImageRun.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TQRichTextImageRun.h; sourceTree = "<group>"; };
+		3EE8A6E2184C890E00C2AA02 /* TQRichTextImageRun.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TQRichTextImageRun.m; sourceTree = "<group>"; };
+		3EE8A6E3184C890E00C2AA02 /* TQRichTextURLRun.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TQRichTextURLRun.h; sourceTree = "<group>"; };
+		3EE8A6E4184C890E00C2AA02 /* TQRichTextURLRun.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TQRichTextURLRun.m; sourceTree = "<group>"; };
+		3EE8A6E5184C890E00C2AA02 /* TQRichTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TQRichTextView.h; sourceTree = "<group>"; };
+		3EE8A6E6184C890E00C2AA02 /* TQRichTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TQRichTextView.m; sourceTree = "<group>"; };
+		3EE8A6E7184C890E00C2AA02 /* WeiboCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WeiboCell.h; sourceTree = "<group>"; };
+		3EE8A6E8184C890E00C2AA02 /* WeiboCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WeiboCell.m; sourceTree = "<group>"; };
+		3EE8A6E9184C890E00C2AA02 /* WeiboView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WeiboView.h; sourceTree = "<group>"; };
+		3EE8A6EA184C890E00C2AA02 /* WeiboView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WeiboView.m; sourceTree = "<group>"; };
+		3EE8A6F2184C89AB00C2AA02 /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -5602,6 +5619,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3EE8A6F3184C89AC00C2AA02 /* CoreText.framework in Frameworks */,
 				3EA05BBE184B269300D6D941 /* libsqlite3.0.dylib in Frameworks */,
 				3E9D28811845F669003BF289 /* UIKit.framework in Frameworks */,
 				3E9D28831845F669003BF289 /* Foundation.framework in Frameworks */,
@@ -5649,7 +5667,6 @@
 		3E9474AC1847399100C28A41 /* 功能类 */ = {
 			isa = PBXGroup;
 			children = (
-				3EE8A6BF184C15E300C2AA02 /* 微博各种数据请求 */,
 				3EA05BBF184B26F800D6D941 /* WeiboDB */,
 				3E9474AA1847397800C28A41 /* 自定义的cell */,
 				3E948A731847547400C28A41 /* 根据文本大小求size */,
@@ -8723,6 +8740,7 @@
 		3E9D28741845F669003BF289 = {
 			isa = PBXGroup;
 			children = (
+				3EE8A6DC184C890E00C2AA02 /* WeiboCell */,
 				3EE8A6BE184C158E00C2AA02 /* 第三方类库 */,
 				3E948A77184755F500C28A41 /* 对象类 */,
 				3E94756D18474D5100C28A41 /* images */,
@@ -8747,6 +8765,7 @@
 		3E9D287F1845F669003BF289 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				3EE8A6F2184C89AB00C2AA02 /* CoreText.framework */,
 				3EA05BBD184B269300D6D941 /* libsqlite3.0.dylib */,
 				3E9D28801845F669003BF289 /* UIKit.framework */,
 				3E9D28821845F669003BF289 /* Foundation.framework */,
@@ -8868,15 +8887,25 @@
 			name = "第三方类库";
 			sourceTree = "<group>";
 		};
-		3EE8A6BF184C15E300C2AA02 /* 微博各种数据请求 */ = {
+		3EE8A6DC184C890E00C2AA02 /* WeiboCell */ = {
 			isa = PBXGroup;
 			children = (
-				3E9474B318473AC400C28A41 /* Public_Timeline_Weibo.h */,
-				3E9474B418473AC400C28A41 /* Public_Timeline_Weibo.m */,
-				3E9474B518473AC400C28A41 /* Friends_Timeline_Weibo.h */,
-				3E9474B618473AC400C28A41 /* Friends_Timeline_Weibo.m */,
+				3EE8A6DD184C890E00C2AA02 /* TQRichTextBaseRun.h */,
+				3EE8A6DE184C890E00C2AA02 /* TQRichTextBaseRun.m */,
+				3EE8A6DF184C890E00C2AA02 /* TQRichTextEmojiRun.h */,
+				3EE8A6E0184C890E00C2AA02 /* TQRichTextEmojiRun.m */,
+				3EE8A6E1184C890E00C2AA02 /* TQRichTextImageRun.h */,
+				3EE8A6E2184C890E00C2AA02 /* TQRichTextImageRun.m */,
+				3EE8A6E3184C890E00C2AA02 /* TQRichTextURLRun.h */,
+				3EE8A6E4184C890E00C2AA02 /* TQRichTextURLRun.m */,
+				3EE8A6E5184C890E00C2AA02 /* TQRichTextView.h */,
+				3EE8A6E6184C890E00C2AA02 /* TQRichTextView.m */,
+				3EE8A6E7184C890E00C2AA02 /* WeiboCell.h */,
+				3EE8A6E8184C890E00C2AA02 /* WeiboCell.m */,
+				3EE8A6E9184C890E00C2AA02 /* WeiboView.h */,
+				3EE8A6EA184C890E00C2AA02 /* WeiboView.m */,
 			);
-			name = "微博各种数据请求";
+			path = WeiboCell;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -11659,8 +11688,6 @@
 				3E9D28A51845F9A9003BF289 /* RootViewController.m in Sources */,
 				3E9474B718473AC400C28A41 /* UserInfo.m in Sources */,
 				3E9474B818473AC400C28A41 /* WeiBoContext.m in Sources */,
-				3E9474B918473AC400C28A41 /* Public_Timeline_Weibo.m in Sources */,
-				3E9474BA18473AC400C28A41 /* Friends_Timeline_Weibo.m in Sources */,
 				3E9474C018473B4500C28A41 /* ImageDownload.m in Sources */,
 				3E9474C118473B4500C28A41 /* WBHTTP_Request_Block.m in Sources */,
 				3E9474C618473B9900C28A41 /* Emotions.m in Sources */,
@@ -11702,6 +11729,13 @@
 				3EE8A6B6184C14F300C2AA02 /* Privacy.m in Sources */,
 				3EE8A6B7184C14F300C2AA02 /* Remind.m in Sources */,
 				3EE8A6B8184C14F300C2AA02 /* Url_short.m in Sources */,
+				3EE8A6EB184C890E00C2AA02 /* TQRichTextBaseRun.m in Sources */,
+				3EE8A6EC184C890E00C2AA02 /* TQRichTextEmojiRun.m in Sources */,
+				3EE8A6ED184C890E00C2AA02 /* TQRichTextImageRun.m in Sources */,
+				3EE8A6EE184C890E00C2AA02 /* TQRichTextURLRun.m in Sources */,
+				3EE8A6EF184C890E00C2AA02 /* TQRichTextView.m in Sources */,
+				3EE8A6F0184C890E00C2AA02 /* WeiboCell.m in Sources */,
+				3EE8A6F1184C890E00C2AA02 /* WeiboView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
