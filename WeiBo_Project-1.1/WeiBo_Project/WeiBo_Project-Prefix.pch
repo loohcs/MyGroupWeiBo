@@ -1,0 +1,76 @@
+//
+// Prefix header for all source files of the 'WeiBo_Project' target in the 'WeiBo_Project' project
+//
+
+#import <Availability.h>
+
+#ifndef __IPHONE_3_0
+#warning "This project uses features only available in iOS SDK 3.0 and later."
+#endif
+
+#ifdef __OBJC__
+    #import <UIKit/UIKit.h>
+    #import <Foundation/Foundation.h>
+
+#import "WeiboSDK.h"
+
+#import "WeiboDataBase.h"//数据库的方法类
+#import "FMDatabase.h"
+#import "FMResultSet.h"
+
+#import "WeiBoContext.h"//微博内容的具体解析
+#import "Emotions.h"//表情的具体解析
+#import "UserInfo.h"//用户的个人信息具体解析
+
+
+#import "Friends_Timeline_Weibo.h"//请求最新好友圈的微博方法类
+#import "Public_Timeline_Weibo.h"//请求最新的公共微博类
+
+#import "WBHTTP_Request_Block.h"//微博网络请求的块方法实现类
+
+#define kAppKey         @"3531528783"
+#define kRedirectURI    @"https://api.weibo.com/oauth2/default.html"
+
+//返回最新的200条公共微博，返回结果非完全实时
+#define STATUSES_PUBLIC_TIMELINE  @"https://api.weibo.com/2/statuses/public_timeline.json"
+
+//发布一条微博信息
+#define STATUSES_UPDATA  @"https://api.weibo.com/2/statuses/update.json"
+
+//对一条微博进行评论
+#define COMMENTS_CREATE @"https://api.weibo.com/2/comments/create.json"
+
+//转发一条微博
+#define STATUSES_REPOST @"https://api.weibo.com/2/statuses/repost.json"
+
+//关注一个用户
+#define FRIENGSHIPS_CREATE @"https://api.weibo.com/2/friendships/create.json"
+
+//取消关注一个用户
+#define FRIENGSHIPS_DESTROY @"https://api.weibo.com/2/friendships/destroy.json"
+
+//批量获取用户的粉丝数、关注数、微博数
+#define USERS_COUNTS @"https://api.weibo.com/2/users/counts.json"
+
+//获取用户的关注列表
+#define FRIENGSHIPS_FRIENDS @"https://api.weibo.com/2/friendships/friends.json"
+
+//获取用户的粉丝列表
+#define FRIENGSHIPS_FOLLOWERS @"https://api.weibo.com/2/friendships/followers.json"
+
+//获取某个用户的各种消息未读数
+#define REMIND_UNREAD @"https://rm.api.weibo.com/2/remind/unread_count.json"
+
+//获取当前登录用户及其所关注用户的最新微博
+#define STATUSES_FRIENDS_TIMELINES @"https://api.weibo.com/2/statuses/friends_timeline.json"
+
+//根据微博ID返回某条微博的评论列表
+#define COMMENTS_SHOW @"https://api.weibo.com/2/comments/show.json"
+
+//获取当前登录用户信息
+#define USERS_SHOW @"https://api.weibo.com/2/users/show.json"
+
+//获取官方表情
+#define WEIBO_EMOTIONS @"https://api.weibo.com/2/emotions.json"
+
+#endif
