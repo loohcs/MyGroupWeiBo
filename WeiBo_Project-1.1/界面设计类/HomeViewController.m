@@ -81,16 +81,37 @@
     NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
     NSArray *weiboArr = [NSArray arrayWithArray:[dic objectForKey:@"statuses"]];
     NSMutableArray *array = [[NSMutableArray alloc] init];
+    NSMutableArray *headImageArr = [[NSMutableArray alloc] init];
+    NSMutableArray *userScreenNameArr = [[NSMutableArray alloc] init];
+    NSMutableArray *sourceArr = [[NSMutableArray alloc] init];
+    NSMutableArray *timeArr = [[NSMutableArray alloc] init];
     [WeiboDataBase createWeiboTable];
     for (int i = 0; i < 10; i++) {
         NSDictionary *weiboDic = [NSDictionary dictionaryWithDictionary:[weiboArr objectAtIndex:i]];
         WeiBoContext *oneWeiboContex = [[WeiBoContext alloc] initWithWeibo:weiboDic];
         [array addObject:oneWeiboContex.text];
         
+        UserInfo *userInfo = [[UserInfo alloc] initWithUser:(NSDictionary *)oneWeiboContex.user];
+        NSString *headImageUrl = [NSString stringWithString:userInfo.profile_image_url];
+        [headImageArr addObject:headImageUrl];
+        
+        NSString *userSN = [NSString stringWithString:userInfo.screen_name];
+        [userScreenNameArr addObject:userSN];
+        
+        NSString *source = [NSString stringWithString:oneWeiboContex.source];
+        [sourceArr addObject:source];
+        
+        NSString *time = [NSString stringWithString:oneWeiboContex.created_at];
+        [timeArr addObject:time];
     }
     
     weiboView.textArray = [[NSArray alloc] initWithArray:array];
+    weiboView.headImageUrlArray = [[NSArray alloc] initWithArray:headImageArr];
+    weiboView.userScreenNameArray = [[NSArray alloc] initWithArray:userScreenNameArr];
+    weiboView.sourceArray = [[NSArray alloc] initWithArray:sourceArr];
+    weiboView.timeArray = [[NSArray alloc] initWithArray:timeArr];
     [weiboView initWithTabelView];
+
     
     //TODO: 判断哪些微博是需要加入数据库的
     //仅仅需要将当前页面显示的微博都加入数据中，不需要所有的微博

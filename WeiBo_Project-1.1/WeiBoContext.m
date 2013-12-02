@@ -76,10 +76,10 @@
 //        //    NSLog(@"_pic_urls = %@", _pic_urls);
 //        NSLog(@"_ad = %@", _ad);
         
-#pragma mark -- 计算当宽度确定时，要显示一确定的文本长度所需的最小大小
-        UIFont *font = [UIFont systemFontOfSize:13];
-        CGSize contexsize = [_text sizeWithFont:font constrainedToSize:CGSizeMake(280, 1000)];
-        NSLog(@"-----------------%g", contexsize.height);
+//#pragma mark -- 计算当宽度确定时，要显示一确定的文本长度所需的最小大小
+//        UIFont *font = [UIFont systemFontOfSize:13];
+//        CGSize contexsize = [_text sizeWithFont:font constrainedToSize:CGSizeMake(280, 1000)];
+//        NSLog(@"-----------------%g", contexsize.height);
     }
     
     return self;

@@ -14,9 +14,19 @@
     UITableView *_tabelView;
     NSMutableArray *_heightArray;
     TQRichTextView *_richTextView;
+    
+    NSMutableArray *_screenNameWidthArr;
+    NSMutableArray *_sourceWidthArr;
 }
+
 @property (nonatomic,retain)NSArray *textArray;
 @property (nonatomic,retain)NSArray *imageArray;
+@property (nonatomic, strong)NSArray *headImageUrlArray;
+@property (nonatomic, strong)NSArray *headImageArray;
+@property (nonatomic, strong)NSArray *userScreenNameArray;
+@property (nonatomic, strong)NSArray *sourceArray;
+@property (nonatomic, strong)NSArray *timeArray;
 
 -(void)initWithTabelView;
+
 @end

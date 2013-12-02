@@ -5692,13 +5692,6 @@
 			name = TabBarPage;
 			sourceTree = "<group>";
 		};
-		3E9474BB18473AEA00C28A41 /* 评论类 */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = "评论类";
-			sourceTree = "<group>";
-		};
 		3E9474C218473B5700C28A41 /* 网络请求块 */ = {
 			isa = PBXGroup;
 			children = (
@@ -8731,7 +8724,6 @@
 				3EE8A6BA184C150D00C2AA02 /* 地理信息类 */,
 				3EE8A6B9184C14F800C2AA02 /* 评论类 */,
 				3E9474A91847396200C28A41 /* 微博正文类 */,
-				3E9474BB18473AEA00C28A41 /* 评论类 */,
 				3E9474A81847395600C28A41 /* 用户信息类 */,
 			);
 			name = "对象类";

@@ -23,6 +23,7 @@
 #import "UserInfo.h"//用户的个人信息具体解析
 
 #import "WBHTTP_Request_Block.h"//微博网络请求的块方法实现类
+#import "ImageDownload.h"//图片下载的快方法实现
 
 #import "TQRichTextBaseRun.h"//富文本基本类
 #import "TQRichTextEmojiRun.h"//富文本表情处理类
