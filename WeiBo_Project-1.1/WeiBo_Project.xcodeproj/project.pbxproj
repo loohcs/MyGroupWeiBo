@@ -2753,7 +2753,6 @@
 		3E948A6F1847511B00C28A41 /* data.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3E948A6E1847511B00C28A41 /* data.plist */; };
 		3E948A721847516900C28A41 /* Newsdata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3E948A711847516900C28A41 /* Newsdata.plist */; };
 		3E948A76184754CD00C28A41 /* GetTextSize.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E948A75184754CD00C28A41 /* GetTextSize.m */; };
-		3E9BB70D1848221900D1E418 /* Temp_Data.txt in Resources */ = {isa = PBXBuildFile; fileRef = 3E9BB70C1848221800D1E418 /* Temp_Data.txt */; };
 		3E9D28811845F669003BF289 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E9D28801845F669003BF289 /* UIKit.framework */; };
 		3E9D28831845F669003BF289 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E9D28821845F669003BF289 /* Foundation.framework */; };
 		3E9D28851845F669003BF289 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E9D28841845F669003BF289 /* CoreGraphics.framework */; };
@@ -2770,6 +2769,11 @@
 		3EA05BBB184B25CA00D6D941 /* FMDatabaseQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 3EA05BB5184B25CA00D6D941 /* FMDatabaseQueue.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		3EA05BBC184B25CA00D6D941 /* FMResultSet.m in Sources */ = {isa = PBXBuildFile; fileRef = 3EA05BB7184B25CA00D6D941 /* FMResultSet.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		3EA05BBE184B269300D6D941 /* libsqlite3.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 3EA05BBD184B269300D6D941 /* libsqlite3.0.dylib */; };
+		3EE8A6B4184C14F300C2AA02 /* Comment.m in Sources */ = {isa = PBXBuildFile; fileRef = 3EE8A6AB184C14F300C2AA02 /* Comment.m */; };
+		3EE8A6B5184C14F300C2AA02 /* Geo.m in Sources */ = {isa = PBXBuildFile; fileRef = 3EE8A6AD184C14F300C2AA02 /* Geo.m */; };
+		3EE8A6B6184C14F300C2AA02 /* Privacy.m in Sources */ = {isa = PBXBuildFile; fileRef = 3EE8A6AF184C14F300C2AA02 /* Privacy.m */; };
+		3EE8A6B7184C14F300C2AA02 /* Remind.m in Sources */ = {isa = PBXBuildFile; fileRef = 3EE8A6B1184C14F300C2AA02 /* Remind.m */; };
+		3EE8A6B8184C14F300C2AA02 /* Url_short.m in Sources */ = {isa = PBXBuildFile; fileRef = 3EE8A6B3184C14F300C2AA02 /* Url_short.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -5553,7 +5557,6 @@
 		3E948A711847516900C28A41 /* Newsdata.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Newsdata.plist; path = ../Newsdata.plist; sourceTree = "<group>"; };
 		3E948A74184754CD00C28A41 /* GetTextSize.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GetTextSize.h; sourceTree = "<group>"; };
 		3E948A75184754CD00C28A41 /* GetTextSize.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GetTextSize.m; sourceTree = "<group>"; };
-		3E9BB70C1848221800D1E418 /* Temp_Data.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Temp_Data.txt; sourceTree = "<group>"; };
 		3E9D287D1845F669003BF289 /* WeiBo_Project.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WeiBo_Project.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3E9D28801845F669003BF289 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		3E9D28821845F669003BF289 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -5582,6 +5585,16 @@
 		3EA05BB6184B25CA00D6D941 /* FMResultSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMResultSet.h; sourceTree = "<group>"; };
 		3EA05BB7184B25CA00D6D941 /* FMResultSet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FMResultSet.m; sourceTree = "<group>"; };
 		3EA05BBD184B269300D6D941 /* libsqlite3.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.0.dylib; path = usr/lib/libsqlite3.0.dylib; sourceTree = SDKROOT; };
+		3EE8A6AA184C14F300C2AA02 /* Comment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Comment.h; sourceTree = "<group>"; };
+		3EE8A6AB184C14F300C2AA02 /* Comment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Comment.m; sourceTree = "<group>"; };
+		3EE8A6AC184C14F300C2AA02 /* Geo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Geo.h; sourceTree = "<group>"; };
+		3EE8A6AD184C14F300C2AA02 /* Geo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Geo.m; sourceTree = "<group>"; };
+		3EE8A6AE184C14F300C2AA02 /* Privacy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Privacy.h; sourceTree = "<group>"; };
+		3EE8A6AF184C14F300C2AA02 /* Privacy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Privacy.m; sourceTree = "<group>"; };
+		3EE8A6B0184C14F300C2AA02 /* Remind.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Remind.h; sourceTree = "<group>"; };
+		3EE8A6B1184C14F300C2AA02 /* Remind.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Remind.m; sourceTree = "<group>"; };
+		3EE8A6B2184C14F300C2AA02 /* Url_short.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Url_short.h; sourceTree = "<group>"; };
+		3EE8A6B3184C14F300C2AA02 /* Url_short.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Url_short.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -5612,10 +5625,6 @@
 		3E9474A91847396200C28A41 /* 微博正文类 */ = {
 			isa = PBXGroup;
 			children = (
-				3E9474B318473AC400C28A41 /* Public_Timeline_Weibo.h */,
-				3E9474B418473AC400C28A41 /* Public_Timeline_Weibo.m */,
-				3E9474B518473AC400C28A41 /* Friends_Timeline_Weibo.h */,
-				3E9474B618473AC400C28A41 /* Friends_Timeline_Weibo.m */,
 				3E9474B118473AC400C28A41 /* WeiBoContext.h */,
 				3E9474B218473AC400C28A41 /* WeiBoContext.m */,
 			);
@@ -5640,10 +5649,11 @@
 		3E9474AC1847399100C28A41 /* 功能类 */ = {
 			isa = PBXGroup;
 			children = (
+				3EE8A6BF184C15E300C2AA02 /* 微博各种数据请求 */,
 				3EA05BBF184B26F800D6D941 /* WeiboDB */,
 				3E9474AA1847397800C28A41 /* 自定义的cell */,
 				3E948A731847547400C28A41 /* 根据文本大小求size */,
-				3E9474C218473B5700C28A41 /* 网络请求 */,
+				3E9474C218473B5700C28A41 /* 网络请求块 */,
 			);
 			name = "功能类";
 			sourceTree = "<group>";
@@ -5672,7 +5682,7 @@
 			name = "评论类";
 			sourceTree = "<group>";
 		};
-		3E9474C218473B5700C28A41 /* 网络请求 */ = {
+		3E9474C218473B5700C28A41 /* 网络请求块 */ = {
 			isa = PBXGroup;
 			children = (
 				3E9474BC18473B4500C28A41 /* ImageDownload.h */,
@@ -5680,7 +5690,7 @@
 				3E9474BE18473B4500C28A41 /* WBHTTP_Request_Block.h */,
 				3E9474BF18473B4500C28A41 /* WBHTTP_Request_Block.m */,
 			);
-			name = "网络请求";
+			name = "网络请求块";
 			sourceTree = "<group>";
 		};
 		3E9474C318473B8300C28A41 /* 表情类 */ = {
@@ -8698,6 +8708,11 @@
 		3E948A77184755F500C28A41 /* 对象类 */ = {
 			isa = PBXGroup;
 			children = (
+				3EE8A6BD184C153800C2AA02 /* 短链类 */,
+				3EE8A6BC184C152A00C2AA02 /* 消息提醒类 */,
+				3EE8A6BB184C151B00C2AA02 /* 私有设置类 */,
+				3EE8A6BA184C150D00C2AA02 /* 地理信息类 */,
+				3EE8A6B9184C14F800C2AA02 /* 评论类 */,
 				3E9474A91847396200C28A41 /* 微博正文类 */,
 				3E9474BB18473AEA00C28A41 /* 评论类 */,
 				3E9474A81847395600C28A41 /* 用户信息类 */,
@@ -8708,15 +8723,13 @@
 		3E9D28741845F669003BF289 = {
 			isa = PBXGroup;
 			children = (
-				3EA05BAD184B25CA00D6D941 /* dataBase */,
-				3E9BB70C1848221800D1E418 /* Temp_Data.txt */,
+				3EE8A6BE184C158E00C2AA02 /* 第三方类库 */,
 				3E948A77184755F500C28A41 /* 对象类 */,
 				3E94756D18474D5100C28A41 /* images */,
 				3E9474CB184740DB00C28A41 /* 界面设计类 */,
 				3E9474C318473B8300C28A41 /* 表情类 */,
 				3E9474AC1847399100C28A41 /* 功能类 */,
 				3E9474AE184739D800C28A41 /* TabBarPage */,
-				3E9D289D1845F6DA003BF289 /* libWeiboSDK */,
 				3E9D28861845F669003BF289 /* WeiBo_Project */,
 				3E9D287F1845F669003BF289 /* Frameworks */,
 				3E9D287E1845F669003BF289 /* Products */,
@@ -8799,6 +8812,71 @@
 				3EA05BAB184B257400D6D941 /* WeiboDataBase.m */,
 			);
 			name = WeiboDB;
+			sourceTree = "<group>";
+		};
+		3EE8A6B9184C14F800C2AA02 /* 评论类 */ = {
+			isa = PBXGroup;
+			children = (
+				3EE8A6AA184C14F300C2AA02 /* Comment.h */,
+				3EE8A6AB184C14F300C2AA02 /* Comment.m */,
+			);
+			name = "评论类";
+			sourceTree = "<group>";
+		};
+		3EE8A6BA184C150D00C2AA02 /* 地理信息类 */ = {
+			isa = PBXGroup;
+			children = (
+				3EE8A6AC184C14F300C2AA02 /* Geo.h */,
+				3EE8A6AD184C14F300C2AA02 /* Geo.m */,
+			);
+			name = "地理信息类";
+			sourceTree = "<group>";
+		};
+		3EE8A6BB184C151B00C2AA02 /* 私有设置类 */ = {
+			isa = PBXGroup;
+			children = (
+				3EE8A6AE184C14F300C2AA02 /* Privacy.h */,
+				3EE8A6AF184C14F300C2AA02 /* Privacy.m */,
+			);
+			name = "私有设置类";
+			sourceTree = "<group>";
+		};
+		3EE8A6BC184C152A00C2AA02 /* 消息提醒类 */ = {
+			isa = PBXGroup;
+			children = (
+				3EE8A6B0184C14F300C2AA02 /* Remind.h */,
+				3EE8A6B1184C14F300C2AA02 /* Remind.m */,
+			);
+			name = "消息提醒类";
+			sourceTree = "<group>";
+		};
+		3EE8A6BD184C153800C2AA02 /* 短链类 */ = {
+			isa = PBXGroup;
+			children = (
+				3EE8A6B2184C14F300C2AA02 /* Url_short.h */,
+				3EE8A6B3184C14F300C2AA02 /* Url_short.m */,
+			);
+			name = "短链类";
+			sourceTree = "<group>";
+		};
+		3EE8A6BE184C158E00C2AA02 /* 第三方类库 */ = {
+			isa = PBXGroup;
+			children = (
+				3E9D289D1845F6DA003BF289 /* libWeiboSDK */,
+				3EA05BAD184B25CA00D6D941 /* dataBase */,
+			);
+			name = "第三方类库";
+			sourceTree = "<group>";
+		};
+		3EE8A6BF184C15E300C2AA02 /* 微博各种数据请求 */ = {
+			isa = PBXGroup;
+			children = (
+				3E9474B318473AC400C28A41 /* Public_Timeline_Weibo.h */,
+				3E9474B418473AC400C28A41 /* Public_Timeline_Weibo.m */,
+				3E9474B518473AC400C28A41 /* Friends_Timeline_Weibo.h */,
+				3E9474B618473AC400C28A41 /* Friends_Timeline_Weibo.m */,
+			);
+			name = "微博各种数据请求";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -11566,7 +11644,6 @@
 				3E948A6D18474D9100C28A41 /* 游戏.jpg in Resources */,
 				3E948A6F1847511B00C28A41 /* data.plist in Resources */,
 				3E948A721847516900C28A41 /* Newsdata.plist in Resources */,
-				3E9BB70D1848221900D1E418 /* Temp_Data.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -11620,6 +11697,11 @@
 				3EA05BBA184B25CA00D6D941 /* FMDatabasePool.m in Sources */,
 				3EA05BBB184B25CA00D6D941 /* FMDatabaseQueue.m in Sources */,
 				3EA05BBC184B25CA00D6D941 /* FMResultSet.m in Sources */,
+				3EE8A6B4184C14F300C2AA02 /* Comment.m in Sources */,
+				3EE8A6B5184C14F300C2AA02 /* Geo.m in Sources */,
+				3EE8A6B6184C14F300C2AA02 /* Privacy.m in Sources */,
+				3EE8A6B7184C14F300C2AA02 /* Remind.m in Sources */,
+				3EE8A6B8184C14F300C2AA02 /* Url_short.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
