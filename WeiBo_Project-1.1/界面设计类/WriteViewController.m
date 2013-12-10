@@ -74,16 +74,62 @@
 {
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyBoardWasShow:) name:UIKeyboardDidShowNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyBoardWasHidden:) name:UIKeyboardDidHideNotification object:nil];
-    _textView = [[UITextView alloc]initWithFrame:CGRectMake(0, 0, 320, 160)];
+    _textView = [[UITextView alloc]initWithFrame:CGRectMake(0, 0, 320, 248)];
     [_textView setBackgroundColor:[UIColor whiteColor]];
     [_textView becomeFirstResponder];
+    //    _textView.delegate = self;
     [self.view addSubview:_textView];
-    _keyBoardView = [[UIView alloc]initWithFrame:CGRectMake(0, 160, 320, 40)];
+    _keyBoardView = [[UIView alloc]initWithFrame:CGRectMake(0, 248, 320, 40)];
     [_keyBoardView setBackgroundColor:[UIColor grayColor]];
     [self.view addSubview:_keyBoardView];
     //增加keyBoardView上的button
     [self addKeyBoardButtons];
     
+    //    _emoScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 288, 320, 568-64-288)];
+    //    _emoScrollView.backgroundColor = [UIColor cyanColor];
+    
+    
+    //将表情贴到scrollView
+    _emoScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 288, 320, 568-64-288)];
+    _emoScrollView.indicatorStyle = UIScrollViewIndicatorStyleWhite;
+    _emoScrollView.showsHorizontalScrollIndicator = NO;
+    _emoScrollView.showsVerticalScrollIndicator = NO;
+    _emoScrollView.pagingEnabled = YES;
+    _emoScrollView.contentSize = CGSizeMake(280 * 4, 200);
+    _emoScrollView.backgroundColor = [UIColor blackColor];
+    _emoScrollView.bounces = NO;
+    _isEmotionsPushed = 0;
+    emoNameArr = [[NSArray alloc] init];
+    NSString *plistPath = [[NSBundle mainBundle] pathForResource:@"faceEmotion" ofType:@"plist"];
+    NSDictionary *emoDic = [NSDictionary dictionaryWithContentsOfFile:plistPath];
+    emoNameArr = [emoDic allKeys];
+    
+    for (int i = 0; i < 6; i++)
+    {
+        for (int j = 0; j < 36; j++) {
+            NSString *emotionName = [NSString stringWithString:[emoDic objectForKey:[emoNameArr objectAtIndex:(i*10+j*1)]]];
+            NSString *emotionPath = [[NSBundle mainBundle] pathForResource:[NSString stringWithFormat:@"%@", emotionName] ofType:@"gif"];
+            UIImage *image = [UIImage imageWithContentsOfFile:emotionPath];
+            UIImageView *imageV = [[UIImageView alloc] initWithFrame:CGRectMake(30*j+5, 30*i+5, 22, 22)];
+            imageV.image = image;
+            imageV.tag = 100+(i*10 + j*1);
+            imageV.userInteractionEnabled = YES;
+            UITapGestureRecognizer *tapGR = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(inputEmotions:)];
+            tapGR.numberOfTapsRequired = 1;
+            [imageV addGestureRecognizer:tapGR];
+            [_emoScrollView addSubview:imageV];
+        }
+    }
+    
+}
+
+- (void)inputEmotions:(UITapGestureRecognizer *)sender
+{
+    int tag = sender.view.tag;
+    NSLog(@"%d", tag);
+    NSString *str = [emoNameArr objectAtIndex:(tag-100)];
+    _textView.text = [_textView.text stringByAppendingString:str];
+    NSLog(@"%@", str);
 }
 
 -(void)keyBoardWasShow:(NSNotification *)aNotification
@@ -92,13 +138,22 @@
     NSValue *aValue = [userInfo objectForKey:UIKeyboardFrameEndUserInfoKey];
     CGRect keyboardRect = [aValue CGRectValue];
     int height = keyboardRect.size.height;
-    _keyBoardView.frame = CGRectMake(0, 460-44-40-height, 320, 40);
+    _keyBoardView.frame = CGRectMake(0, 548-44-40-height, 320, 40);
     NSLog(@"%d",height);
 }
 
 -(void)keyBoardWasHidden:(NSNotification *)aNotification
 {
-    _keyBoardView.frame = CGRectMake(0, 420, 320, 40);
+    _keyBoardView.frame = CGRectMake(0, 248, 320, 40);
+    //    self.tabBarController.hidesBottomBarWhenPushed = YES;
+    
+}
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField
+{
+    
+    [textField resignFirstResponder];
+    return YES;
 }
 
 -(void)addKeyBoardButtons
@@ -127,7 +182,7 @@
                 break;
             case 3:
             {
-                [btn addTarget:self action:@selector(emoticon) forControlEvents:UIControlEventTouchUpInside];
+                [btn addTarget:self action:@selector(emotions) forControlEvents:UIControlEventTouchUpInside];
             }
                 break;
             case 4:
@@ -178,17 +233,64 @@
     
 }
 
--(void)emoticon
+-(void)emotions
 {
+    if (_isEmotionsPushed == 0)
+    {
+        
+        [_textView resignFirstResponder];
+        //_keyBoardView.frame = CGRectMake(0, 208, 320, 40);
+        self.hidesBottomBarWhenPushed = YES;
+        
+        [self.view addSubview:_emoScrollView];
+        _isEmotionsPushed = 1;
+    }
+    else if(_isEmotionsPushed == 1)
+    {
+        _isEmotionsPushed = 0;
+        [_emoScrollView removeFromSuperview];
+        [_textView becomeFirstResponder];
+    }
+    
     
 }
+
+
 -(void)more
 {
     
 }
 - (void)finishAction
 {
+    NSString *statuses = [[NSString alloc] init];
+    statuses = [URLEncode encodeUrlStr:_textView.text];
     
+    NSUserDefaults *defaluts = [NSUserDefaults standardUserDefaults];
+    NSDictionary *dic = [[NSDictionary alloc] initWithObjectsAndKeys:_textView.text, @"status", @"0", @"visible",nil];
+    [WBHttpRequest requestWithAccessToken:[defaluts objectForKey:@"accessToken"] url:STATUSES_UPDATA
+                               httpMethod:@"POST" params:dic delegate:self];
+    NSLog(@"--------------------%@", statuses);
+}
+
+//响应请求
+- (void)request:(WBHttpRequest *)request didReceiveResponse:(NSURLResponse *)response
+{
+    NSLog(@"%s", __func__);
+    NSLog(@"收到微博数据请求！！！");
+}
+
+//完成请求
+- (void)request:(WBHttpRequest *)request didFinishLoadingWithResult:(NSString *)result
+{
+    NSLog(@"%s", __func__);
+    //NSLog(@"%@", result);
+}
+
+//请求出错
+- (void)request:(WBHttpRequest *)request didFailWithError:(NSError *)error
+{
+    NSLog(@"%s", __func__);
+    NSLog(@"%@", error);
 }
 
 - (void)backToHomeView
@@ -203,3 +305,4 @@
 }
 
 @end
+

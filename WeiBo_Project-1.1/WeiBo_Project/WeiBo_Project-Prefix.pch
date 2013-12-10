@@ -32,7 +32,14 @@
 #import "TQRichTextView.h"//富文本显示label
 
 #import "WeiboCell.h"//自定义的微博cell
-#import "WeiboView.h"//微博主页正文显示View
+
+#import "UIScrollView+PullLoad.h"//刷新的第三方类库
+
+#import "UIViewExt.h"//对view的辅助处理
+
+#import "URLEncode.h"//将字符串进行URLEncode编码
+
+#import "DateHelper.h"//时间处理辅助函数
 
 #import "HomeViewController.h"
 #import "MessageViewController.h"

@@ -23,7 +23,7 @@
 - (BOOL)drawRunWithRect:(CGRect)rect
 {
     CGContextRef context = UIGraphicsGetCurrentContext();
-    NSString *emojiString = [NSString stringWithFormat:@"%@.png",self.originalText];
+    NSString *emojiString = [NSString stringWithFormat:@"%@.gif",self.originalText];
     
     UIImage *image = [UIImage imageNamed:emojiString];
     if (image)
@@ -35,7 +35,15 @@
 
 + (NSArray *) emojiStringArray
 {
-    return [NSArray arrayWithObjects:@"[smile]",@"[cry]",@"[d_wabishi]",nil];
+    NSString *plistPath = [[NSBundle mainBundle] pathForResource:@"faceEmotion" ofType:@"plist"];
+    NSDictionary *emoDic = [NSDictionary dictionaryWithContentsOfFile:plistPath];
+    NSArray *emokeys = [emoDic allKeys];
+    NSMutableArray *emotionsArray = [[NSMutableArray alloc] init];
+    for (NSString *key in emokeys) {
+        NSString *str = [emoDic objectForKey:key];
+        [emotionsArray addObject:str];
+    }
+    return emotionsArray;
 }
 
 + (NSString *)analyzeText:(NSString *)string runsArray:(NSMutableArray **)runArray
