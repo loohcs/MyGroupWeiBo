@@ -157,6 +157,8 @@
     //添加微博下方的三个按钮
     self.retweetButton.frame = CGRectMake(10,  height-40, 100, 40);
     self.retweetButton.backgroundColor = [UIColor lightGrayColor];
+    self.retweetButton.titleLabel.font = [UIFont systemFontOfSize:12.0];
+    self.retweetButton.tintColor = [UIColor blueColor];
     NSString *repotsCount = [NSString stringWithFormat:@"%d",weibo.reposts_count];
     [self.retweetButton setTitle:repotsCount forState:UIControlStateNormal];
     NSString *path = [[NSBundle mainBundle] pathForResource:@"toolbar_icon_retweet_os7@2x" ofType:@"png"];
@@ -166,6 +168,8 @@
     
     self.commentButton.frame = CGRectMake(110,  height-40, 100, 40);
     self.commentButton.backgroundColor = [UIColor lightGrayColor];
+    self.commentButton.titleLabel.font = [UIFont systemFontOfSize:12.0];
+    self.commentButton.tintColor = [UIColor blueColor];
     NSString *commentsCount = [NSString stringWithFormat:@"%d",weibo.comments_count];
     [self.commentButton setTitle:commentsCount forState:UIControlStateNormal];
     NSString *path1 = [[NSBundle mainBundle] pathForResource:@"toolbar_icon_comment_os7@2x" ofType:@"png"];
@@ -175,6 +179,8 @@
     
     self.praiseButton.frame = CGRectMake(210,  height-40, 100, 40);
     self.praiseButton.backgroundColor = [UIColor lightGrayColor];
+    self.praiseButton.titleLabel.font = [UIFont systemFontOfSize:12.0];
+    self.praiseButton.tintColor = [UIColor blueColor];
     NSString *attitudesCount = [NSString stringWithFormat:@"%d",weibo.attitudes_count];
     [self.praiseButton setTitle:attitudesCount forState:UIControlStateNormal];
     NSString *path2 = [[NSBundle mainBundle] pathForResource:@"toolbar_icon_unlike_os7@2x" ofType:@"png"];

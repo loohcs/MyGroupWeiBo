@@ -45,6 +45,8 @@
 @property (nonatomic, assign)int bi_followers_count;//用户的互粉数
 @property (nonatomic, strong)NSString *lang;//用户当前的语言版本，zh-cn：简体中文，zh-tw：繁体中文，en：英文
 
+@property (nonatomic, assign)int distance;//当前用户与你本人之间的距离信息；
+
 - (id)initWithUser:(NSDictionary *)dic;
 
 @end

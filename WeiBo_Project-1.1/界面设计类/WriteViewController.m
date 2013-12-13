@@ -24,6 +24,9 @@
     if (self) {
         _weiboContext = [[WeiBoContext alloc] init];
         _weiboView = [[UIView alloc] initWithFrame:CGRectMake(0, 150, 320, 70)];
+        
+        _style = sendWeiboContex;
+        
         //_weiboView.backgroundColor = [UIColor cyanColor];
         [self.view addSubview:_weiboView];
     }
@@ -48,11 +51,20 @@
     UILabel *label = [[UILabel alloc]initWithFrame:CGRectMake(0, 8, 100, 36-8)];
     label.backgroundColor = [UIColor clearColor];
     label.textAlignment = 1;
-    label.text = @"发微博";
+    if (_style  == 0) {
+        label.text = @"发微博";
+    }
+    if (_style  == 1) {
+        label.text = @"转发微博";
+    }
+    if (_style  == 2) {
+        label.text = @"评论";
+    }
+
     label.font = [UIFont fontWithName:@"Helvetica-Bold" size:21];
     label.textColor = [UIColor grayColor];
     [titleView addSubview:label];
-    self.navigationItem.titleView =titleView;
+    self.navigationItem.titleView = titleView;
     
     //返回Button
     UIView *view = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 60, 44)];
@@ -77,6 +89,8 @@
     [rightView addSubview:finish];
     UIBarButtonItem *rightItem = [[UIBarButtonItem alloc]initWithCustomView:rightView];
     self.navigationItem.rightBarButtonItem = rightItem;
+    
+    //[self creatBackNavigationBarWithTitle:@"发微博" sign:1];
 }
 
 //TODO： 对键盘进行一些初始化和设置
@@ -331,9 +345,11 @@
 }
 
 #pragma mark -- 在转发微博的时候也会调用本页面，此时应该添加显示简单的微博内容
-- (void)addWeiboContex:(WeiBoContext *)oneWeiboContex
+- (void)addWeiboContex:(WeiBoContext *)oneWeiboContex andContexStyle:(ContexStyle)aStyle
 {
     _weiboContext = oneWeiboContex;
+    _style = aStyle;
+    [self initWithTitle];
     //创建一个imageView，将会粘贴需要显示的图片
     UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(5, 5, 60, 60)];
     
@@ -363,8 +379,6 @@
             imageView.image = oneWeiboContex.thumbnailImage;
             [_weiboView addSubview:imageView];
         }
-        
-        
         textLabel.text = oneWeiboContex.text;
     }
     else
@@ -381,7 +395,6 @@
             [_weiboView addSubview:imageView];
         }
         textLabel.text = oneWeiboContex.retweetedWeibo.text;
-        
         _textView.text = oneWeiboContex.text;
     }
 }
@@ -393,11 +406,27 @@
     NSString *statuses = [[NSString alloc] init];
     statuses = [URLEncode encodeUrlStr:_textView.text];
     
+    NSLog(@"-------------------%d", _style);
+    
     NSUserDefaults *defaluts = [NSUserDefaults standardUserDefaults];
-    NSDictionary *dic = [[NSDictionary alloc] initWithObjectsAndKeys:_textView.text, @"status", @"0", @"visible", _weiboContext.idstr, @"id", nil];
-    [WBHttpRequest requestWithAccessToken:[defaluts objectForKey:@"accessToken"] url:STATUSES_REPOST
-                               httpMethod:@"POST" params:dic delegate:self];
-    //NSLog(@"--------------------%@", statuses);
+    
+    if (_style == 0)
+    {
+        NSDictionary *dic = [[NSDictionary alloc] initWithObjectsAndKeys:_textView.text, @"status", @"0", @"visible", nil];
+        [WBHttpRequest requestWithAccessToken:[defaluts objectForKey:@"accessToken"] url:STATUSES_UPDATA
+                                   httpMethod:@"POST" params:dic delegate:self];
+    }
+    if (_style == 1) {
+        NSDictionary *dic = [[NSDictionary alloc] initWithObjectsAndKeys:_textView.text, @"status", @"0", @"visible", _weiboContext.idstr, @"id", nil];
+        [WBHttpRequest requestWithAccessToken:[defaluts objectForKey:@"accessToken"] url:STATUSES_REPOST
+                                   httpMethod:@"POST" params:dic delegate:self];
+    }
+    if (_style == 2) {
+        NSDictionary *dic = [[NSDictionary alloc] initWithObjectsAndKeys:_textView.text, @"comment", _weiboContext.idstr, @"id", nil];
+        [WBHttpRequest requestWithAccessToken:[defaluts objectForKey:@"accessToken"] url:COMMENTS_CREATE
+                                   httpMethod:@"POST" params:dic delegate:self];
+    }
+    
 }
 
 //响应请求

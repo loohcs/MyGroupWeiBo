@@ -247,6 +247,7 @@
         NSIndexSet *indexSet=[[NSIndexSet alloc]initWithIndex:index];
         [_tableView reloadSections:indexSet withRowAnimation:UITableViewRowAnimationAutomatic];
         
+//        [_tableView reloadData];
         
     }
     
@@ -467,9 +468,10 @@
 - (void)retweetedWeibo:(UIButton *)sender
 {
     WriteViewController *writeView = [[WriteViewController alloc]init];
-    [writeView addWeiboContex:[weiboContextsArr objectAtIndex:sender.tag - 100]];
+    [writeView addWeiboContex:[weiboContextsArr objectAtIndex:sender.tag - 100] andContexStyle:repotWeiboContex];
     UINavigationController *naVC = [[UINavigationController alloc]initWithRootViewController:writeView];
     [naVC.navigationBar setBackgroundImage:[UIImage imageNamed:@"navigationbar_background"] forBarMetrics:UIBarMetricsDefault];
+    naVC.title = @"转发微博";
     [self presentViewController:naVC animated:YES completion:nil];
 }
 

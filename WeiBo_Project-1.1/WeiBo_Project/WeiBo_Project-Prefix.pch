@@ -99,4 +99,10 @@
 //获取官方表情
 #define WEIBO_EMOTIONS @"https://api.weibo.com/2/emotions.json"
 
+//根据IP地址返回地理信息坐标
+#define LOCATION_GEO_IP_TO_GEO @"https://api.weibo.com/2/location/geo/ip_to_geo.json"
+
+//获取附近位置发微博的人
+#define PLACE_NEARBY_USERS @"https://api.weibo.com/2/place/nearby/users.json"
+
 #endif

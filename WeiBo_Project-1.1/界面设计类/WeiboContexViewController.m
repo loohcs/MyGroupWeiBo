@@ -55,6 +55,7 @@
     [_scrollView addSubview:self.tableView];
     
     
+    //准备和添加屏幕页面下方的三个按钮。
     UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 518, 320, 30)];
     view.backgroundColor = [UIColor darkGrayColor];
     
@@ -66,6 +67,7 @@
     NSString *path = [[NSBundle mainBundle] pathForResource:@"toolbar_icon_retweet_os7@2x" ofType:@"png"];
     UIImage *retBtnImage = [UIImage imageWithContentsOfFile:path];
     [retBtn setImage:retBtnImage forState:UIControlStateNormal];
+    [retBtn addTarget:self action:@selector(retweetedWeibo:) forControlEvents:UIControlEventTouchUpInside];
     [view addSubview:retBtn];
     
     UIButton *comBtn = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -76,6 +78,7 @@
     NSString *path1 = [[NSBundle mainBundle] pathForResource:@"toolbar_icon_comment_os7@2x" ofType:@"png"];
     UIImage *comBtnImage = [UIImage imageWithContentsOfFile:path1];
     [comBtn setImage:comBtnImage forState:UIControlStateNormal];
+    [comBtn addTarget:self action:@selector(commentWeibo:) forControlEvents:UIControlEventTouchUpInside];
     [view addSubview:comBtn];
     
     UIButton *praBtn = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -92,6 +95,7 @@
     
 }
 
+//通过调用该方法，获得我们需要评论的微博
 - (void)getWeiboContex:(WeiBoContext *)oneWeiboContex
 {
     _weiboContex = [[WeiBoContext alloc] init];
@@ -104,11 +108,13 @@
     [self getCommentForWeibo:_weiboContex.idstr];
 }
 
+#pragma mark -- 通过微博ID请求该微博相关的评论
 - (void)getCommentForWeibo:(NSString *)weiboID
 {
     NSUserDefaults *defaluts = [NSUserDefaults standardUserDefaults];
     [WBHttpRequest requestWithAccessToken:[defaluts objectForKey:@"accessToken"] url:COMMENTS_SHOW httpMethod:@"GET" params:[NSDictionary dictionaryWithObjectsAndKeys:weiboID, @"id", nil] delegate:self];
 }
+
 
 //响应请求
 - (void)request:(WBHttpRequest *)request didReceiveResponse:(NSURLResponse *)response
@@ -168,7 +174,6 @@
 }
 
 #pragma mark - Table view data source
-
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (indexPath.section == 0) {
@@ -259,12 +264,12 @@
         NSString *path2 = [[NSBundle mainBundle] pathForResource:@"toolbar_icon_unlike_os7@2x" ofType:@"png"];
         UIImage *praBtnImage = [UIImage imageWithContentsOfFile:path2];
         [praBtn setImage:praBtnImage forState:UIControlStateNormal];
+        [praBtn addTarget:self action:nil forControlEvents:UIControlEventTouchUpInside];
         [view addSubview:praBtn];
         
         return view;
     }
 }
-
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -300,14 +305,43 @@
                 [cell viewCommentForWeibo:oneComment];
             }
         }
-    
+        
         return cell;
-    
+        
     }
     // Configure the cell...
     
     //    return cell;
 }
+
+
+#pragma mark -- 屏幕下方三个按钮触发的方法
+- (void)retweetedWeibo:(UIButton *)sender
+{
+    WriteViewController *writeView = [[WriteViewController alloc]init];
+    writeView.title = @"转发微博";
+    [writeView addWeiboContex:_weiboContex andContexStyle:repotWeiboContex];
+    UINavigationController *naVC = [[UINavigationController alloc]initWithRootViewController:writeView];
+    [naVC.navigationBar setBackgroundImage:[UIImage imageNamed:@"navigationbar_background"] forBarMetrics:UIBarMetricsDefault];
+    [self presentViewController:naVC animated:YES completion:nil];
+}
+
+- (void)commentWeibo:(UIButton *)sender
+{
+    WriteViewController *writeView = [[WriteViewController alloc]init];
+    [writeView addWeiboContex:_weiboContex andContexStyle:sendWeiboComment];
+    UINavigationController *naVC = [[UINavigationController alloc]initWithRootViewController:writeView];
+    [naVC.navigationBar setBackgroundImage:[UIImage imageNamed:@"navigationbar_background"] forBarMetrics:UIBarMetricsDefault];
+    naVC.title = @"发表评论";
+    [self presentViewController:naVC animated:YES completion:nil];
+    
+}
+
+- (void)praiseWeibo:(UIButton *)sender
+{
+    
+}
+
 
 - (CGFloat)getCommentHeight:(Comment *)oneComment
 {
@@ -385,25 +419,27 @@
 {
     if (state == PullDownLoadState)
     {
-        [self performSelector:@selector(PullDownLoadEnd) withObject:nil afterDelay:3];
+        [self performSelector:@selector(PullDownLoadEnd) withObject:nil afterDelay:1];
     }
     else
     {
-        [self performSelector:@selector(PullUpLoadEnd) withObject:nil afterDelay:3];
+        [self performSelector:@selector(PullUpLoadEnd) withObject:nil afterDelay:1];
     }
 }
+
 //下拉
 - (void)PullDownLoadEnd
 {
 
     self.tableView.canPullUp = YES;
+    NSUserDefaults *defaluts = [NSUserDefaults standardUserDefaults];
+    [WBHttpRequest requestWithAccessToken:[defaluts objectForKey:@"accessToken"] url:COMMENTS_SHOW httpMethod:@"GET" params:[NSDictionary dictionaryWithObjectsAndKeys:_weiboContex.idstr, @"id", nil] delegate:self];
     [self.tableView reloadData];
     [self.tableView stopLoadWithState:PullDownLoadState];
 }
 //加载
 - (void)PullUpLoadEnd
 {
-    
     [self.tableView reloadData];
     [self.tableView stopLoadWithState:PullUpLoadState];
 }

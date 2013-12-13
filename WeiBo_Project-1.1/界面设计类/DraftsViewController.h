@@ -8,6 +8,10 @@
 
 #import <UIKit/UIKit.h>
 
-@interface DraftsViewController : UIViewController
+@interface DraftsViewController : UIViewController<UITableViewDelegate,UITableViewDataSource,PullDelegate,UIScrollViewDelegate>
+
+@property (nonatomic, strong)UITableView *tableView;
+
+@property (nonatomic, strong)NSMutableData *dataInDrafts;
 
 @end
