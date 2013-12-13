@@ -38,6 +38,7 @@
         self.weiboImage = [[UIImageView alloc]initWithFrame:CGRectMake(0, 60, 120, 80)];
         
         self.headImage = [[UIImageView alloc]initWithFrame:CGRectZero];
+        //self.headImage.image = nil;
         self.headImage.frame = CGRectMake(20, 10, 30, 30);
         
         
@@ -49,10 +50,12 @@
         self.retWeiboText.backgroundColor = [UIColor clearColor];
         
         self.retWeiboImage = [[UIImageView alloc] initWithFrame:CGRectZero];
+        //self.retWeiboImage.image = nil;
         
         self.commentButton = [UIButton buttonWithType:UIButtonTypeCustom];
         self.retweetButton = [UIButton buttonWithType:UIButtonTypeCustom];
         self.praiseButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        
         
         [self addSubview:self.nameLabel];
         [self addSubview:self.decLabel];
@@ -60,7 +63,7 @@
         [self addSubview:self.weiboImage];
         [self addSubview:self.headImage];
         [self addSubview:self.commentButton];
-
+        
         [self addSubview:self.praiseButton];
         [self addSubview:self.richText];
         [self addSubview:self.retweetButton];
@@ -131,14 +134,14 @@
     }
     else
     {
-//        self.retWeiboView = [[UIView alloc] initWithFrame:CGRectZero];
-//        self.retWeiboView.backgroundColor = [UIColor grayColor];
-//        
-//        self.retWeiboText = [[TQRichTextView alloc] init];
-//        self.retWeiboText.font = [UIFont systemFontOfSize:12];
-//        self.retWeiboText.backgroundColor = [UIColor clearColor];
-//        
-//        self.retWeiboImage = [[UIImageView alloc] initWithFrame:CGRectZero];
+        //        self.retWeiboView = [[UIView alloc] initWithFrame:CGRectZero];
+        //        self.retWeiboView.backgroundColor = [UIColor grayColor];
+        //
+        //        self.retWeiboText = [[TQRichTextView alloc] init];
+        //        self.retWeiboText.font = [UIFont systemFontOfSize:12];
+        //        self.retWeiboText.backgroundColor = [UIColor clearColor];
+        //
+        //        self.retWeiboImage = [[UIImageView alloc] initWithFrame:CGRectZero];
     }
     
     CGFloat height = [WeiboCell getSize:weibo];
@@ -152,92 +155,115 @@
     
     
     //添加微博下方的三个按钮
-    self.retweetButton.frame = CGRectMake(10,  height-50, 100, 40);
+    self.retweetButton.frame = CGRectMake(10,  height-40, 100, 40);
     self.retweetButton.backgroundColor = [UIColor lightGrayColor];
-    [self.retweetButton setTitle:@"转发" forState:UIControlStateNormal];
+    NSString *repotsCount = [NSString stringWithFormat:@"%d",weibo.reposts_count];
+    [self.retweetButton setTitle:repotsCount forState:UIControlStateNormal];
     NSString *path = [[NSBundle mainBundle] pathForResource:@"toolbar_icon_retweet_os7@2x" ofType:@"png"];
     UIImage *retBtnImage = [UIImage imageWithContentsOfFile:path];
+    [self.retweetButton addTarget:self action:@selector(retweetedWeibo:) forControlEvents:UIControlEventTouchUpInside];
     [self.retweetButton setImage:retBtnImage forState:UIControlStateNormal];
     
-    self.commentButton.frame = CGRectMake(110,  height-50, 100, 40);
+    self.commentButton.frame = CGRectMake(110,  height-40, 100, 40);
     self.commentButton.backgroundColor = [UIColor lightGrayColor];
-    [self.commentButton setTitle:@"评论" forState:UIControlStateNormal];
+    NSString *commentsCount = [NSString stringWithFormat:@"%d",weibo.comments_count];
+    [self.commentButton setTitle:commentsCount forState:UIControlStateNormal];
     NSString *path1 = [[NSBundle mainBundle] pathForResource:@"toolbar_icon_comment_os7@2x" ofType:@"png"];
     UIImage *comBtnImage = [UIImage imageWithContentsOfFile:path1];
+    [self.commentButton addTarget:self action:@selector(commentWeibo:) forControlEvents:UIControlEventTouchUpInside];
     [self.commentButton setImage:comBtnImage forState:UIControlStateNormal];
     
-    self.praiseButton.frame = CGRectMake(210,  height-50, 100, 40);
+    self.praiseButton.frame = CGRectMake(210,  height-40, 100, 40);
     self.praiseButton.backgroundColor = [UIColor lightGrayColor];
-    [self.praiseButton setTitle:@"赞" forState:UIControlStateNormal];
+    NSString *attitudesCount = [NSString stringWithFormat:@"%d",weibo.attitudes_count];
+    [self.praiseButton setTitle:attitudesCount forState:UIControlStateNormal];
     NSString *path2 = [[NSBundle mainBundle] pathForResource:@"toolbar_icon_unlike_os7@2x" ofType:@"png"];
     UIImage *praBtnImage = [UIImage imageWithContentsOfFile:path2];
+    [self.praiseButton addTarget:self action:@selector(praiseWeibo:) forControlEvents:UIControlEventTouchUpInside];
     [self.praiseButton setImage:praBtnImage forState:UIControlStateNormal];
- 
+    
     
 #warning mark -- 下面的方法下载微博多张图片时，微博高度的计算，以及将图片贴上cell
     /*
-//    CGSize weiboImageSize = CGSizeZero;
-//    UIImageView *weiboImageTemp = [[UIImageView alloc] initWithFrame:CGRectMake(20, height, image.size.width, image.size.height)];
-//    
-//    if (weibo.weiboPics.count == 1 || weibo.weiboPics.count == 2) {
-//        weiboImageSize = CGSizeMake(image.size.width * weibo.weiboPics.count, image.size.height);
-//        for (int i = 0; i< weibo.weiboPics.count; i++) {
-//            UIImageView *imageViewTemp = [[UIImageView alloc] initWithFrame:CGRectMake((5 + image.size.width)*i, 5, image.size.width, image.size.height)];
-//            UIImage *imageTemp = [weibo.weiboPics objectAtIndex:i];
-//            imageViewTemp.image = imageTemp;
-//            [weiboImageTemp addSubview:imageViewTemp];
-//        }
-//    }
-//    if (weibo.weiboPics.count == 4 || weibo.weiboPics.count == 6) {
-//        weiboImageSize = CGSizeMake(image.size.width * (weibo.weiboPics.count/2), image.size.height * 2 + 10);
-//        for (int i = 0; i< weibo.weiboPics.count; i++) {
-//            UIImageView *imageViewTemp = [[UIImageView alloc] initWithFrame:CGRectZero];
-//            if ((5 + image.size.width)*i < 280) {
-//                imageViewTemp = [[UIImageView alloc] initWithFrame:CGRectMake((5 + image.size.width)*i, 5, image.size.width, image.size.height)];
-//                
-//            }
-//            else
-//            {
-//                imageViewTemp = [[UIImageView alloc] initWithFrame:CGRectMake((5 + image.size.width)*(weibo.weiboPics.count - 1 - i), 5+image.size.height, image.size.width, image.size.height)];
-//            }
-//            UIImage *imageTemp = [weibo.weiboPics objectAtIndex:i];
-//            imageViewTemp.image = imageTemp;
-//            [weiboImageTemp addSubview:imageViewTemp];
-//        }
-//    }
-//    if (weibo.weiboPics.count >6) {
-//        if (image.size.width * 3 > 280) {
-//            
-//            weiboImageSize = CGSizeMake(280, 280*image.size.height/image.size.width);
-//        }
-//        else
-//        {
-//            weiboImageSize = CGSizeMake(image.size.width * 3, image.size.height * 3 + 20);
-//        }
-//    }
-//    
-//    [self.imageView addSubview:weiboImageTemp];
-
-//    if (weibo.retweeted_status != nil) {
-//        self.retWeiboView = [[WeiboCell alloc] initWithFrame:CGRectZero];
-//        self.retWeiboView.backgroundColor = [UIColor clearColor];
-//        WeiBoContext *retweetedWeibo = [[WeiBoContext alloc] initWithWeibo:(NSDictionary *)weibo.retweeted_status];
-//        NSString *retText = retweetedWeibo.text;
-//        CGSize retTextSize = [retText sizeWithFont:[UIFont systemFontOfSize:15] constrainedToSize:CGSizeMake(280, 1000)];
-//        self.retWeiboView.richText.frame = CGRectMake(20, 50, retTextSize.width, retTextSize.height);
-//        self.retWeiboView.richText.backgroundColor = [UIColor cyanColor];
-//        self.retWeiboView.richText.text = retText;
-//    }
+     //    CGSize weiboImageSize = CGSizeZero;
+     //    UIImageView *weiboImageTemp = [[UIImageView alloc] initWithFrame:CGRectMake(20, height, image.size.width, image.size.height)];
+     //
+     //    if (weibo.weiboPics.count == 1 || weibo.weiboPics.count == 2) {
+     //        weiboImageSize = CGSizeMake(image.size.width * weibo.weiboPics.count, image.size.height);
+     //        for (int i = 0; i< weibo.weiboPics.count; i++) {
+     //            UIImageView *imageViewTemp = [[UIImageView alloc] initWithFrame:CGRectMake((5 + image.size.width)*i, 5, image.size.width, image.size.height)];
+     //            UIImage *imageTemp = [weibo.weiboPics objectAtIndex:i];
+     //            imageViewTemp.image = imageTemp;
+     //            [weiboImageTemp addSubview:imageViewTemp];
+     //        }
+     //    }
+     //    if (weibo.weiboPics.count == 4 || weibo.weiboPics.count == 6) {
+     //        weiboImageSize = CGSizeMake(image.size.width * (weibo.weiboPics.count/2), image.size.height * 2 + 10);
+     //        for (int i = 0; i< weibo.weiboPics.count; i++) {
+     //            UIImageView *imageViewTemp = [[UIImageView alloc] initWithFrame:CGRectZero];
+     //            if ((5 + image.size.width)*i < 280) {
+     //                imageViewTemp = [[UIImageView alloc] initWithFrame:CGRectMake((5 + image.size.width)*i, 5, image.size.width, image.size.height)];
+     //
+     //            }
+     //            else
+     //            {
+     //                imageViewTemp = [[UIImageView alloc] initWithFrame:CGRectMake((5 + image.size.width)*(weibo.weiboPics.count - 1 - i), 5+image.size.height, image.size.width, image.size.height)];
+     //            }
+     //            UIImage *imageTemp = [weibo.weiboPics objectAtIndex:i];
+     //            imageViewTemp.image = imageTemp;
+     //            [weiboImageTemp addSubview:imageViewTemp];
+     //        }
+     //    }
+     //    if (weibo.weiboPics.count >6) {
+     //        if (image.size.width * 3 > 280) {
+     //
+     //            weiboImageSize = CGSizeMake(280, 280*image.size.height/image.size.width);
+     //        }
+     //        else
+     //        {
+     //            weiboImageSize = CGSizeMake(image.size.width * 3, image.size.height * 3 + 20);
+     //        }
+     //    }
+     //
+     //    [self.imageView addSubview:weiboImageTemp];
+     
+     //    if (weibo.retweeted_status != nil) {
+     //        self.retWeiboView = [[WeiboCell alloc] initWithFrame:CGRectZero];
+     //        self.retWeiboView.backgroundColor = [UIColor clearColor];
+     //        WeiBoContext *retweetedWeibo = [[WeiBoContext alloc] initWithWeibo:(NSDictionary *)weibo.retweeted_status];
+     //        NSString *retText = retweetedWeibo.text;
+     //        CGSize retTextSize = [retText sizeWithFont:[UIFont systemFontOfSize:15] constrainedToSize:CGSizeMake(280, 1000)];
+     //        self.retWeiboView.richText.frame = CGRectMake(20, 50, retTextSize.width, retTextSize.height);
+     //        self.retWeiboView.richText.backgroundColor = [UIColor cyanColor];
+     //        self.retWeiboView.richText.text = retText;
+     //    }
      */
-     
-     
+    
+    
 }
 
+- (void)retweetedWeibo:(id)sender
+{
+    //    WriteViewController *writeView = [[WriteViewController alloc]init];
+    //    UINavigationController *naVC = [[UINavigationController alloc]initWithRootViewController:writeView];
+    //    [naVC.navigationBar setBackgroundImage:[UIImage imageNamed:@"navigationbar_background"] forBarMetrics:UIBarMetricsDefault];
+    //    [self presentViewController:naVC animated:YES completion:nil];
+}
+
+- (void)commentWeibo:(id)sender
+{
+    
+}
+
+- (void)praiseWeibo:(id)sender
+{
+    
+}
 
 #pragma mark -- 类方法，可以获得整个微博cell的高度
 + (CGFloat)getSize:(WeiBoContext *)weibo
 {
-
+    
     //获得微博文本高度
     NSString *text = weibo.text;
     CGSize textSize = [text sizeWithFont:[UIFont systemFontOfSize:15] constrainedToSize:CGSizeMake(280, 1000)];
@@ -248,24 +274,26 @@
     
     CGSize weiboImageSize = image.size;
     
-    //多张图片的高度计算
-//    if (weibo.weiboPics.count == 1 || weibo.weiboPics.count == 2) {
-//        weiboImageSize = CGSizeMake(image.size.width * weibo.weiboPics.count, image.size.height);
-//    }
-//    if (weibo.weiboPics.count == 4 || weibo.weiboPics.count == 6) {
-//        weiboImageSize = CGSizeMake(image.size.width * (weibo.weiboPics.count/2), image.size.height * 2 + 10);
-//    }
-//    if (weibo.weiboPics.count >6) {
-//        if (image.size.width * 3 > 280) {
-//            
-//            weiboImageSize = CGSizeMake(280, 280*image.size.height/image.size.width);
-//        }
-//        else
-//        {
-//            weiboImageSize = CGSizeMake(image.size.width * 3, image.size.height * 3 + 20);
-//        }
-//    }
-
+    /*
+     //多张图片的高度计算
+     //    if (weibo.weiboPics.count == 1 || weibo.weiboPics.count == 2) {
+     //        weiboImageSize = CGSizeMake(image.size.width * weibo.weiboPics.count, image.size.height);
+     //    }
+     //    if (weibo.weiboPics.count == 4 || weibo.weiboPics.count == 6) {
+     //        weiboImageSize = CGSizeMake(image.size.width * (weibo.weiboPics.count/2), image.size.height * 2 + 10);
+     //    }
+     //    if (weibo.weiboPics.count >6) {
+     //        if (image.size.width * 3 > 280) {
+     //
+     //            weiboImageSize = CGSizeMake(280, 280*image.size.height/image.size.width);
+     //        }
+     //        else
+     //        {
+     //            weiboImageSize = CGSizeMake(image.size.width * 3, image.size.height * 3 + 20);
+     //        }
+     //    }
+     */
+    
     CGSize retTextSize = CGSizeZero;
     UIImage *retImage = [[UIImage alloc] init];
     

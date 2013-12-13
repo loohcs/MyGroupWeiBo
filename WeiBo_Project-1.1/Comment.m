@@ -19,6 +19,7 @@
         _source = [dic objectForKey:@"source"];
         _user = [dic objectForKey:@"user"];
         _userInfo = [[UserInfo alloc] initWithUser:(NSDictionary *)_user];
+        _headImage = [[UIImage alloc] init];
         _mid = [dic objectForKey:@"mid"];
         _idstr = [dic objectForKey:@"idstr"];
         _status = [dic objectForKey:@"status"];

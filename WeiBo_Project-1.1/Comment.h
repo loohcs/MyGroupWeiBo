@@ -16,6 +16,7 @@
 @property (nonatomic, strong)NSString *source;//评论的来源
 @property (nonatomic, strong)NSObject *user;//评论作者的用户信息字段
 @property (nonatomic, strong)UserInfo *userInfo;//评论作者的具体用户信息
+@property (nonatomic, strong)UIImage *headImage;//评论作者的头像
 @property (nonatomic, strong)NSString *mid;//评论的MID
 @property (nonatomic, strong)NSString *idstr;//字符串类型的评论ID
 @property (nonatomic, strong)NSObject *status;//评论的微博信息字段

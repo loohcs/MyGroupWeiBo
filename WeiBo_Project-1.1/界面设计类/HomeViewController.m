@@ -9,6 +9,7 @@
 #import "HomeViewController.h"
 #import "WriteViewController.h"
 #import "WeiboCell.h"
+#import "WeiboContexViewController.h"
 @interface HomeViewController ()
 
 @end
@@ -20,8 +21,15 @@
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // Custom initialization
-        _weibosArray = [[NSMutableArray alloc] init];
+        weiboContextsArr = [[NSMutableArray alloc] init];
+        _receivedData = [[NSMutableData alloc] init];
+        _weiboCount = 0;
         
+        middleFlag = 0;
+        rightFlag = 0;
+        flag = 0;
+        middleTableV=[[UITableView alloc]initWithFrame:CGRectMake(110, 0, 100, 120) style:UITableViewStyleGrouped];
+        rightTableV = [[UITableView alloc] initWithFrame:CGRectMake(230, 0, 80, 100) style:UITableViewStyleGrouped];
     }
     return self;
 }
@@ -30,7 +38,7 @@
 {
     [super viewDidLoad];
     
-    _allWeiboArray = [[NSMutableArray alloc] init];
+    weiboContextsArr = [[NSMutableArray alloc] init];
     _receivedData = [[NSMutableData alloc] init];
     _weiboCount = 0;
     
@@ -39,6 +47,7 @@
     flag = 0;
     middleTableV=[[UITableView alloc]initWithFrame:CGRectMake(110, 0, 100, 120) style:UITableViewStyleGrouped];
     rightTableV = [[UITableView alloc] initWithFrame:CGRectMake(230, 0, 80, 100) style:UITableViewStyleGrouped];
+    
     
     self.view.backgroundColor = [UIColor lightGrayColor];
     //创建左右button和中间标题栏
@@ -123,25 +132,15 @@
     //[self getWeiboImages:weiboContextsArr];
 }
 
+#pragma mark -- 获取微博的各种图片
 - (void)prepareForWeiboImage:(NSMutableArray *)weiboArray
 {
     
 #warning mark -- 因为下载图片是通过块的调用来实现的，具有一定的延时性。而且下载的图片都是按照顺序一张张下载的，所以我们在下载图片的同时，我们需要确定下载的本张图片到底是属于那一份微博。（目前，我们在微博中使用的都只是缩略图，并未使用图片数组，即pic_urls下载得到的weiboPics。使用数组时，在将图片贴到自定义的weiboCell上会出现一点点小问题，就是多张图片贴的时候会有时混乱。暂定解决思路：在init方法中就定义好九个imageView，然后通过switch语句，依次将图片贴上）
     __weak HomeViewController *homeVC = self;
-    _headNum = 0;
-    _headImagesArray = [[NSMutableArray alloc] init];
     
-    
-    //为了准确的定位下载的每一张图片所属的微博编号所准备的数据
-    _thumbnailNum = 0;
-    _thumbnailFlagArray = [[NSMutableArray alloc] init];
-    _thumbnailImagesArray = [[NSMutableArray alloc] init];
-    _thumbnailLastFlag = -1;
-    _thumbnailFlag = 0;
     
     //为了确保将每一张图片准确的贴到转发微博上所准备的数据
-    _retweetFlagArray = [[NSMutableArray alloc] init];
-    _retweetNum = 0;
     
     for (int i = 0; i <weiboArray.count; i++) {
         //获得微博正文
@@ -153,17 +152,11 @@
             //判断转发微博是否存在图片
             if (oneWeiboContex.retweetedWeibo.thumbnail_pic.length != 0) {
                 
-                //将转发微博并且具有图片的微博编号存入数组，方便将图片准备添加到微博上
-                [_retweetFlagArray addObject:[NSNumber numberWithInt:i]];
-                
                 //下载转发微博缩略图
                 ImageDownload *retWeiboThumbImage = [[ImageDownload alloc] initWithURlString:oneWeiboContex.retweetedWeibo.thumbnail_pic];
                 [retWeiboThumbImage setBlock:^(NSMutableData *datas, float progressNum) {
-                    if (homeVC.retweetNum < _retweetFlagArray.count) {
-                        //从存放编号的数组中取出具有图片的转发微博编号
-                        int temp = [[_retweetFlagArray objectAtIndex:homeVC.retweetNum] intValue];
-                        [homeVC getRetWeiboThumbImage:datas andIndex:temp];
-                        homeVC.retweetNum ++;
+                    if (i < weiboContextsArr.count) {
+                        [homeVC getRetWeiboThumbImage:datas andIndex:i];
                     }
                 }];
             }
@@ -172,23 +165,18 @@
         //下载用户头像
         ImageDownload *headImageDown = [[ImageDownload alloc] initWithURlString:oneWeiboContex.userInfo.profile_image_url];
         [headImageDown setBlock:^(NSMutableData *datas, float progressNum) {
-            if (homeVC.headNum < weiboContextsArr.count) {
+            if (i < weiboContextsArr.count) {
                 //因为所有的微博必定有一位用户，同样也肯定有用户头像，所以只需要++ 就可以了
-                [homeVC getHeadImage:datas andIndex:homeVC.headNum++];
+                [homeVC getHeadImage:datas andIndex:i];
             }
         }];
         
         if (oneWeiboContex.thumbnail_pic.length != 0) {
             //将微博中存在图片的微博编号存入数组中，此时被默认为原创微博
-            [_thumbnailFlagArray addObject:[NSNumber numberWithInt:i]];
             ImageDownload *weiboThumbnailImage = [[ImageDownload alloc] initWithURlString:oneWeiboContex.thumbnail_pic];
             [weiboThumbnailImage setBlock:^(NSMutableData *datas, float progressNum) {
-                if (homeVC.thumbnailNum < _thumbnailFlagArray.count) {
-                    
-                    //从存放具有图片的原创微博编号的数组中取出该图片对应的编号
-                    int temp = [[_thumbnailFlagArray objectAtIndex:homeVC.thumbnailNum] intValue];
-                    [homeVC getThumbnailImage:datas andIndex:temp];
-                    homeVC.thumbnailNum ++;
+                if (i < weiboContextsArr.count) {
+                    [homeVC getThumbnailImage:datas andIndex:i];
                 }
             }];
         }
@@ -197,15 +185,31 @@
     
 }
 
+
 //通过块的调用，将数据传入方法中，实现头像图片的获取
 - (void)getHeadImage:(NSMutableData *)data andIndex:(int)index
 {
+    //    //Test
+    //    NSString *str = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
+    //    NSString *path = [str stringByAppendingPathComponent:[NSString stringWithFormat:@"headImage_%d.jpg", index]];
+    //    NSFileManager *fileManager = [NSFileManager defaultManager];
+    //    if (![fileManager fileExistsAtPath:path]) {
+    //        [fileManager createFileAtPath:path contents:data attributes:nil];
+    //    }
+    //    else
+    //    {
+    //        [data writeToFile:path atomically:YES];
+    //    }
+    
+    //NSLog(@"-----------headImage--------%d", index);
     UIImage *image = [UIImage imageWithData:data];
-    [_headImagesArray addObject:image];
     if (index < weiboContextsArr.count) {
         WeiBoContext *oneWeiboContex = [weiboContextsArr objectAtIndex:index];
-        oneWeiboContex.headImage = [_headImagesArray objectAtIndex:index];
+        //NSLog(@"%@", oneWeiboContex.userInfo.profile_image_url);
+        oneWeiboContex.headImage = [[UIImage alloc] init];
+        oneWeiboContex.headImage = image;
         [weiboContextsArr replaceObjectAtIndex:index withObject:oneWeiboContex];
+        
         [_tableView reloadData];
     }
     
@@ -215,152 +219,192 @@
 - (void)getThumbnailImage:(NSMutableData *)data andIndex:(int)index
 {
     
+#warning mark -- 每次执行本方法的时候，从块中得到的数据是块在上一次下载之后遗留下得数据，因此在界面中就显示出，所有图片都是上一趟运行时应该具有的图片，而本次图片的显示则会出现在下一次的运行之中。
+    
+    //    //Test
+    //    NSString *str = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
+    //    NSString *path = [str stringByAppendingPathComponent:[NSString stringWithFormat:@"thumbnailImage_%d.jpg", index]];
+    //    NSFileManager *fileManager = [NSFileManager defaultManager];
+    //    if (![fileManager fileExistsAtPath:path]) {
+    //        [fileManager createFileAtPath:path contents:data attributes:nil];
+    //    }
+    //    else
+    //    {
+    //        [data writeToFile:path atomically:YES];
+    //    }
+    
+    //NSLog(@"-----------ThumbnailImage--------%d", index);
+    UIImage *image = [[UIImage alloc] initWithData:data];
     if (data.length > 0) {
         WeiBoContext *oneWeiboContex = [weiboContextsArr objectAtIndex:index];
         oneWeiboContex.thumbnailImage = [[UIImage alloc] init];
-        UIImage *image = [[UIImage alloc] initWithData:data];
-        
+        //NSLog(@"%@", oneWeiboContex.thumbnail_pic);
         oneWeiboContex.thumbnailImage = image;
         
         //更新微博内容中得图片属性
         [weiboContextsArr replaceObjectAtIndex:index withObject:oneWeiboContex];
+        
+        NSIndexSet *indexSet=[[NSIndexSet alloc]initWithIndex:index];
+        [_tableView reloadSections:indexSet withRowAnimation:UITableViewRowAnimationAutomatic];
+        
+        
     }
     
-    [_tableView reloadData];
+    
 }
 
 //通过块的调用，将数据传入方法中，实现转发微博缩略图片的获取与加载
 - (void)getRetWeiboThumbImage:(NSMutableData *)data andIndex:(int)index
 {
+    //NSLog(@"-----------retWeiboThumbImage--------%d", index);
     if (data.length > 0) {
+        
+        //        //Test
+        //        NSString *str = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
+        //        NSString *path = [str stringByAppendingPathComponent:[NSString stringWithFormat:@"retWeiboThumb_%d.jpg", index]];
+        //        NSFileManager *fileManager = [NSFileManager defaultManager];
+        //        if (![fileManager fileExistsAtPath:path]) {
+        //            [fileManager createFileAtPath:path contents:data attributes:nil];
+        //        }
+        //        else
+        //        {
+        //            [data writeToFile:path atomically:YES];
+        //        }
+        
         WeiBoContext *oneWeiboContex = [weiboContextsArr objectAtIndex:index];
         oneWeiboContex.retweetedWeibo.thumbnailImage = [[UIImage alloc] init];
         UIImage *image = [[UIImage alloc] initWithData:data];
-        
         oneWeiboContex.retweetedWeibo.thumbnailImage = image;
         
         //更新微博内容中得图片属性
         [weiboContextsArr replaceObjectAtIndex:index withObject:oneWeiboContex];
+        
+//        NSIndexSet *indexSet=[[NSIndexSet alloc]initWithIndex:index];
+//        [_tableView reloadSections:indexSet withRowAnimation:UITableViewRowAnimationAutomatic];
+        
+        [_tableView reloadData];
     }
     
-    [_tableView reloadData];
+    //[_tableView reloadData];
 }
 
+/*
+ - (void)getWeiboImages:(NSMutableArray *)weiboArrTemp
+ {
+ NSLog(@"%s", __func__);
+ __weak HomeViewController *homeVC = self;
+ _imagesArray = [[NSMutableArray alloc] init];
+ _flagArray = [[NSMutableArray alloc] init];
+ _weiboFlag = 0;
+ _lastFlag = -1;
+ 
+ _retweetFlagArray = [[NSMutableArray alloc] init];
+ _retweetLastFlag = -1;
+ _retweetWeiboFlag = 0;
+ 
+ for (int i=0; i < weiboArrTemp.count; i++) {
+ 
+ //将存放微博内容的成员从数组中取出
+ WeiBoContext *oneWeiboContex = [weiboArrTemp objectAtIndex:i];
+ 
+ //从微博正文中获得微博正文图片的地址数组
+ NSArray *picUrlsArr = [[NSArray alloc] initWithArray:(NSArray *)oneWeiboContex.pic_urls];
+ 
+ //如果地址数组的成员存在，则下载图片
+ if (picUrlsArr.count != 0) {
+ _imagesArray = [[NSMutableArray alloc] init];
+ for (NSDictionary *dic in picUrlsArr) {
+ NSLog(@"000000000000000000--------%d", i);
+ 
+ //将图片所在的微博编号存放进数组，便于在有多张图时准确存进微博正文
+ [_flagArray addObject:[NSNumber numberWithInt:i]];
+ 
+ //获得url
+ NSString *url = [dic objectForKey:@"thumbnail_pic"];
+ NSLog(@"%@", url);
+ ImageDownload *weiboPicDown = [[ImageDownload alloc] initWithURlString:url];
+ //通过块的调用实现图片的下载
+ [weiboPicDown setBlock:^(NSMutableData *datas, float progressNum) {
+ NSLog(@"11111111111111111");
+ NSLog(@"%d", homeVC.weiboFlag);
+ int temp = 0;
+ if (homeVC.weiboFlag < homeVC.flagArray.count) {
+ //因为块的下载有一定的延时性，必须要等图片下载完成了才调用块内代码
+ //从存放微博编号的数组中取出编号
+ temp = [[homeVC.flagArray objectAtIndex:homeVC.weiboFlag] intValue];
+ //将下载好得数据，以及微博编号传到函数中去，对微博正文内容进行更新
+ [homeVC getWeiboImageArr:datas andIndex:temp];
+ homeVC.weiboFlag++;
+ }
+ }];
+ }
+ }
+ else
+ {
+ NSLog(@"2222222222222222222222---------%d", i);
+ //当pic_urls为空得时候，有两种情况，1：该微博没有图片，2：该微博为转发微博，则需要重复上一个过程，即转发微博图片的下载。
+ if (oneWeiboContex.retweeted_status == nil) {
+ NSLog(@"该微博为原创微博，没有图片！");
+ oneWeiboContex.isRetweeted = NO;
+ }
+ else
+ {
+ NSLog(@"该微博为转发微博，在微博图片位置将添加转发的微博内容");
+ oneWeiboContex.isRetweeted = YES;
+ oneWeiboContex.retweetedWeibo = [[WeiBoContext alloc] initWithWeibo:(NSDictionary *)oneWeiboContex.retweeted_status];
+ oneWeiboContex.retweetedWeibo.isRetweeted = NO;
+ [weiboArrTemp replaceObjectAtIndex:i withObject:oneWeiboContex];
+ weiboContextsArr = weiboArrTemp;
+ 
+ //                if (i == weiboArrTemp.count) {
+ //                    [self getWeiboImages:weiboArrTemp];
+ //                }
+ 
+ }
+ }
+ 
+ }
+ 
+ }
+ 
+ 
+ - (void)getWeiboImageArr:(NSMutableData *)data andIndex:(int)i
+ {
+ NSLog(@"%s", __func__);
+ //NSLog(@"%@", data);
+ #warning data对象存在，所以我们要判断的是data.length，而不是data是否存在或是否为空
+ if (data.length > 0) {
+ WeiBoContext *oneWeiboContex = [weiboContextsArr objectAtIndex:i];
+ UIImage *image = [[UIImage alloc] initWithData:data];
+ 
+ //判断现在下载好得图片跟上一张图片是否是同一份微博的
+ if (_lastFlag != i) {
+ //若不是，则对存放图片的数组进行初始化
+ _imagesArray  = [[NSMutableArray alloc] init];
+ 
+ //            //此时前一份微博的图片都已经下载完成，将isHasPics属性改为YES
+ //            WeiBoContext *lastWeibo = [weiboContextsArr objectAtIndex:_lastFlag];
+ //            lastWeibo.isHasPics = YES;
+ //            [weiboContextsArr replaceObjectAtIndex:_lastFlag withObject:lastWeibo];
+ }
+ //若是，则将本张图片也添加到该微博中
+ [_imagesArray addObject:image];
+ oneWeiboContex.weiboPics = _imagesArray;
+ 
+ //更新微博内容中得图片属性
+ [weiboContextsArr replaceObjectAtIndex:i withObject:oneWeiboContex];
+ _lastFlag = i;
+ }
+ if (self.weiboFlag == _flagArray.count-1) {
+ NSLog(@"对tablev进行数据重载");
+ }
+ 
+ [_tableView reloadData];
+ }
+ */
 
-- (void)getWeiboImages:(NSMutableArray *)weiboArrTemp
-{
-    NSLog(@"%s", __func__);
-    __weak HomeViewController *homeVC = self;
-    _imagesArray = [[NSMutableArray alloc] init];
-    _flagArray = [[NSMutableArray alloc] init];
-    _weiboFlag = 0;
-    _lastFlag = -1;
-    
-    _retweetFlagArray = [[NSMutableArray alloc] init];
-    _retweetLastFlag = -1;
-    _retweetWeiboFlag = 0;
-    
-    for (int i=0; i < weiboArrTemp.count; i++) {
-        
-        //将存放微博内容的成员从数组中取出
-        WeiBoContext *oneWeiboContex = [weiboArrTemp objectAtIndex:i];
-        
-        //从微博正文中获得微博正文图片的地址数组
-        NSArray *picUrlsArr = [[NSArray alloc] initWithArray:(NSArray *)oneWeiboContex.pic_urls];
-        
-        //如果地址数组的成员存在，则下载图片
-        if (picUrlsArr.count != 0) {
-            _imagesArray = [[NSMutableArray alloc] init];
-            for (NSDictionary *dic in picUrlsArr) {
-                NSLog(@"000000000000000000--------%d", i);
-                
-                //将图片所在的微博编号存放进数组，便于在有多张图时准确存进微博正文
-                [_flagArray addObject:[NSNumber numberWithInt:i]];
-                
-                //获得url
-                NSString *url = [dic objectForKey:@"thumbnail_pic"];
-                NSLog(@"%@", url);
-                ImageDownload *weiboPicDown = [[ImageDownload alloc] initWithURlString:url];
-                //通过块的调用实现图片的下载
-                [weiboPicDown setBlock:^(NSMutableData *datas, float progressNum) {
-                    NSLog(@"11111111111111111");
-                    NSLog(@"%d", homeVC.weiboFlag);
-                    int temp = 0;
-                    if (homeVC.weiboFlag < homeVC.flagArray.count) {
-                        //因为块的下载有一定的延时性，必须要等图片下载完成了才调用块内代码
-                        //从存放微博编号的数组中取出编号
-                        temp = [[homeVC.flagArray objectAtIndex:homeVC.weiboFlag] intValue];
-                        //将下载好得数据，以及微博编号传到函数中去，对微博正文内容进行更新
-                        [homeVC getWeiboImageArr:datas andIndex:temp];
-                        homeVC.weiboFlag++;
-                    }
-                }];
-            }
-        }
-        else
-        {
-            NSLog(@"2222222222222222222222---------%d", i);
-            //当pic_urls为空得时候，有两种情况，1：该微博没有图片，2：该微博为转发微博，则需要重复上一个过程，即转发微博图片的下载。
-            if (oneWeiboContex.retweeted_status == nil) {
-                NSLog(@"该微博为原创微博，没有图片！");
-                oneWeiboContex.isRetweeted = NO;
-            }
-            else
-            {
-                NSLog(@"该微博为转发微博，在微博图片位置将添加转发的微博内容");
-                oneWeiboContex.isRetweeted = YES;
-                oneWeiboContex.retweetedWeibo = [[WeiBoContext alloc] initWithWeibo:(NSDictionary *)oneWeiboContex.retweeted_status];
-                oneWeiboContex.retweetedWeibo.isRetweeted = NO;
-                [weiboArrTemp replaceObjectAtIndex:i withObject:oneWeiboContex];
-                weiboContextsArr = weiboArrTemp;
-                
-                //                if (i == weiboArrTemp.count) {
-                //                    [self getWeiboImages:weiboArrTemp];
-                //                }
-                
-            }
-        }
-        
-    }
-    
-}
 
-
-- (void)getWeiboImageArr:(NSMutableData *)data andIndex:(int)i
-{
-    NSLog(@"%s", __func__);
-    //NSLog(@"%@", data);
-#warning data对象存在，所以我们要判断的是data.length，而不是data是否存在或是否为空
-    if (data.length > 0) {
-        WeiBoContext *oneWeiboContex = [weiboContextsArr objectAtIndex:i];
-        UIImage *image = [[UIImage alloc] initWithData:data];
-        
-        //判断现在下载好得图片跟上一张图片是否是同一份微博的
-        if (_lastFlag != i) {
-            //若不是，则对存放图片的数组进行初始化
-            _imagesArray  = [[NSMutableArray alloc] init];
-            
-            //            //此时前一份微博的图片都已经下载完成，将isHasPics属性改为YES
-            //            WeiBoContext *lastWeibo = [weiboContextsArr objectAtIndex:_lastFlag];
-            //            lastWeibo.isHasPics = YES;
-            //            [weiboContextsArr replaceObjectAtIndex:_lastFlag withObject:lastWeibo];
-        }
-        //若是，则将本张图片也添加到该微博中
-        [_imagesArray addObject:image];
-        oneWeiboContex.weiboPics = _imagesArray;
-        
-        //更新微博内容中得图片属性
-        [weiboContextsArr replaceObjectAtIndex:i withObject:oneWeiboContex];
-        _lastFlag = i;
-    }
-    if (self.weiboFlag == _flagArray.count-1) {
-        NSLog(@"对tablev进行数据重载");
-    }
-    
-    [_tableView reloadData];
-}
-
-
+#pragma mark -- TableView的代理方法
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     //    NSLog(@"%s", __func__);
@@ -398,8 +442,61 @@
     }
     [cell viewWeiboContex:[weiboContextsArr objectAtIndex:indexPath.section]];
     
+    cell.retweetButton.tag = 100 + indexPath.section;
+    [cell.retweetButton addTarget:self action:@selector(retweetedWeibo:) forControlEvents:UIControlEventTouchUpInside];
+    
+    cell.commentButton.tag = 200 + indexPath.section;
+    [cell.commentButton addTarget:self action:@selector(commentWeibo:) forControlEvents:UIControlEventTouchUpInside];
+    
+    cell.praiseButton.tag = 300 + indexPath.section;
+    [cell.praiseButton addTarget:self action:@selector(praiseWeibo:) forControlEvents:UIControlEventTouchUpInside];
+    
     return cell;
 }
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    WeiboContexViewController *weiboVC = [[WeiboContexViewController alloc] init];
+    UINavigationController *navc = [[UINavigationController alloc]initWithRootViewController:weiboVC];
+    navc.navigationBarHidden = YES;
+    [self presentViewController:navc animated:YES completion:nil];
+    [weiboVC getWeiboContex:[weiboContextsArr objectAtIndex:indexPath.section]];
+}
+
+#pragma mark -- 每个cell里面三个按钮触发的方法
+- (void)retweetedWeibo:(UIButton *)sender
+{
+    WriteViewController *writeView = [[WriteViewController alloc]init];
+    [writeView addWeiboContex:[weiboContextsArr objectAtIndex:sender.tag - 100]];
+    UINavigationController *naVC = [[UINavigationController alloc]initWithRootViewController:writeView];
+    [naVC.navigationBar setBackgroundImage:[UIImage imageNamed:@"navigationbar_background"] forBarMetrics:UIBarMetricsDefault];
+    [self presentViewController:naVC animated:YES completion:nil];
+}
+
+- (void)commentWeibo:(UIButton *)sender
+{
+    WeiboContexViewController *weiboConVC = [[WeiboContexViewController alloc] init];
+    //通过tag值获取微博正文
+    [weiboConVC getWeiboContex:[weiboContextsArr objectAtIndex:sender.tag - 200]];
+    
+    CGFloat height = [WeiboCell getSize:[weiboContextsArr objectAtIndex:sender.tag - 200]];
+
+    weiboConVC.scrollView.frame = CGRectMake(0, 0, 320, height + 568-20-44-30);
+    weiboConVC.scrollView.contentOffset = CGPointMake(0, height + 20);
+    weiboConVC.scrollView.scrollEnabled = NO;
+    weiboConVC.scrollView.bounces = NO;
+    
+    UINavigationController *naVC = [[UINavigationController alloc]initWithRootViewController:weiboConVC];
+    [naVC.navigationBar setBackgroundImage:[UIImage imageNamed:@"navigationbar_background"] forBarMetrics:UIBarMetricsDefault];
+    naVC.navigationBarHidden = YES;
+    [self presentViewController:naVC animated:YES completion:nil];
+}
+
+- (void)praiseWeibo:(UIButton *)sender
+{
+    
+}
+
 
 //下拉刷新跟加载的方法
 #pragma mark -
@@ -418,17 +515,18 @@
 //下拉
 - (void)PullDownLoadEnd
 {
-    //count = 15;
-    _weiboCount = 0;
+    _receivedData = [[NSMutableData alloc] init];
+    
     [self getTimelineWeibo:@"statuses_friends_timeline"];
     _tableView.canPullUp = YES;
-    [_tableView reloadData];
+    //[_tableView reloadData];
     [_tableView stopLoadWithState:PullDownLoadState];
 }
 //加载
 - (void)PullUpLoadEnd
 {
     _weiboCount += 20;
+    
     [self getWeiboContex:_receivedData];
     
     if (_weiboCount == 80) {
@@ -439,7 +537,7 @@
     [_tableView stopLoadWithState:PullUpLoadState];
 }
 
-#pragma initWithButtonAndTitle
+#pragma mark -- initWithButtonAndTitle
 -(void)initWithButtonAndTitle
 {
     //leftButton
@@ -492,7 +590,9 @@
 -(void)leftButtonAction
 {
     WriteViewController *writeView = [[WriteViewController alloc]init];
-    [self.navigationController pushViewController:writeView animated:YES];
+    UINavigationController *naVC = [[UINavigationController alloc]initWithRootViewController:writeView];
+    [naVC.navigationBar setBackgroundImage:[UIImage imageNamed:@"navigationbar_background"] forBarMetrics:UIBarMetricsDefault];
+    [self presentViewController:naVC animated:YES completion:nil];
 }
 
 -(void)middleButtonAction

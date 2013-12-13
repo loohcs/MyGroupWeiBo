@@ -21,32 +21,38 @@
 #import "WeiBoContext.h"//微博内容的具体解析
 #import "Emotions.h"//表情的具体解析
 #import "UserInfo.h"//用户的个人信息具体解析
+#import "Comment.h"//评论的各种属性解析
+#import "Geo.h"//地理信息的具体解析
+
 
 #import "WBHTTP_Request_Block.h"//微博网络请求的块方法实现类
-#import "ImageDownload.h"//图片下载的快方法实现
+#import "ImageDownload.h"//图片下载的块方法实现类
 
 #import "TQRichTextBaseRun.h"//富文本基本类
 #import "TQRichTextEmojiRun.h"//富文本表情处理类
 #import "TQRichTextImageRun.h"//富文本图片处理类
 #import "TQRichTextURLRun.h"//富文本文本处理类（@，##，URL）
 #import "TQRichTextView.h"//富文本显示label
+#import "CustomCell.h"//自定义cell，主要用于显示评论
 
 #import "WeiboCell.h"//自定义的微博cell
+//#import "WeiboView.h"//微博主页正文显示View
+#import "DateHelper.h"//时间日期辅助处理方法类
+#import "URLEncode.h"//将字符串封装成URLEncode类型
 
-#import "UIScrollView+PullLoad.h"//刷新的第三方类库
+#import "WriteViewController.h"//发微博的界面，主要用于键盘，以及表情等得调用
 
-#import "UIViewExt.h"//对view的辅助处理
-
-#import "URLEncode.h"//将字符串进行URLEncode编码
-
-#import "DateHelper.h"//时间处理辅助函数
-
+#import "CustomTabbarController.h"
 #import "HomeViewController.h"
 #import "MessageViewController.h"
 #import "PersonalViewController.h"
 #import "SquareViewController.h"
 #import "MoreViewController.h"
 #import "BaseNavigationViewController.h"
+
+#import "UIViewController+CreatCustomNaBar.h"
+
+#import "UIScrollView+PullLoad.h"
 
 #define kAppKey         @"3531528783"
 #define kRedirectURI    @"https://api.weibo.com/oauth2/default.html"

@@ -32,7 +32,7 @@
         _friends_count = [[dic objectForKey:@"friends_count"] intValue];
         _statuses_count = [[dic objectForKey:@"statuses_count"] intValue];
         _favourites_count = [[dic objectForKey:@"favourites_count"] intValue];
-        _created_at = [dic objectForKey:@"create_at"];
+        _created_at = [dic objectForKey:@"created_at"];
         _following = (Boolean)[dic objectForKey:@"following"];
         _allow_all_act_msg = (Boolean)[dic objectForKey:@"allow_all_act_msg"];
         _geo_enabled = (Boolean)[dic objectForKey:@"list_id"];
@@ -47,38 +47,6 @@
         _online_status = [[dic objectForKey:@"online_status"] intValue];
         _bi_followers_count = [[dic objectForKey:@"bi_followers_count"] intValue];
         _lang = [dic objectForKey:@"lang"];
-        
-//        NSLog(@"_userID = %@", _userID);
-//        NSLog(@"_userIDstr = %@", _userIDstr);
-//        NSLog(@"_screen_name = %@", _screen_name);
-//        NSLog(@"_name = %@", _name);
-//        NSLog(@"_province = %d", _province);
-//        NSLog(@"_city = %d", _city);
-//        NSLog(@"_location = %@" , _location);
-//        NSLog(@"_description = %@" , _description);
-//        NSLog(@"_url = %@", _url);
-//        NSLog(@"_profile_image_url = %@", _profile_image_url);
-//        NSLog(@"_profile_url = %@", _profile_url);
-//        NSLog(@"_domain = %@", _domain);
-//        NSLog(@"_weihao = %@", _weihao);
-//        NSLog(@"_gender = %@", _gender);
-//        NSLog(@"_followers_count = %d", _followers_count);
-//        NSLog(@"_friends_count = %d", _friends_count);
-//        NSLog(@"_statuses_count = %@", _status);
-//        NSLog(@"_favourites_count = %d", _favourites_count);
-//        NSLog(@"_following = %d", _following);
-//        NSLog(@"_allow_all_act_msg = %d", _allow_all_act_msg);
-//        NSLog(@"_geo_enabled = %d", _geo_enabled);
-//        NSLog(@"_verified = %d", _verified);
-//        NSLog(@"_verified_type = %d", _verified_type);
-//        NSLog(@"_remark = %@", _remark);
-//        NSLog(@"_status = %@", _status);
-//        NSLog(@"_allow_all_comment = %d", _allow_all_comment);
-//        NSLog(@"_avatar_large = %@", _avatar_large);
-//        NSLog(@"_avatar_hd = %@", _avatar_hd);
-//        NSLog(@"_verified_reason = %@", _verified_reason);
-//        NSLog(@"_bi_followers_count = %d", _bi_followers_count);
-//        NSLog(@"_lang = %@", _lang);
 
     }
     

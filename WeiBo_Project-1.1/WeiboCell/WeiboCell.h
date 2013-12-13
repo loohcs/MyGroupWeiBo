@@ -18,6 +18,7 @@
 @property (strong, nonatomic)  UIButton *commentButton;
 @property (strong, nonatomic)  UIButton *retweetButton;
 @property (strong, nonatomic)  UIButton *praiseButton;
+@property (assign, nonatomic)  BOOL isPraised;
 @property (strong, nonatomic)  TQRichTextView *richText;
 
 @property (strong, nonatomic)  UIView *retWeiboView;
