@@ -27,52 +27,168 @@
     return self;
 }
 
+WBHTTP_Request_Block *personInfoDown;
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    
+    Reachability *reachability = [Reachability reachabilityWithHostName:@"www.sina.com"];
+    switch ([reachability currentReachabilityStatus]) {
+        case NotReachable:
+        {
+            NSLog(@"没有网络连接！");
+            NSString *str = [PersonalViewController getUserInfoPath];
+            NSString *path = [str stringByAppendingPathComponent:@"userInfo"];
+            NSData *data = [[NSData alloc] initWithContentsOfFile:path];
+            NSError *error = nil;
+            NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
+            _userInfo = [[UserInfo alloc] initWithUser:dic];
+            _weiboContex = [[WeiBoContext alloc] initWithWeibo:[dic objectForKey:@"status"]];
+            break;
+        }
+        case ReachableViaWWAN:
+        {
+            NSLog(@"使用3G网络！");
+            __weak PersonalViewController *personVC = self;
+            NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+            NSString *uerId = [defaults objectForKey:@"userID"];
+            NSDictionary *dic = [NSDictionary dictionaryWithObjectsAndKeys:uerId,@"uid", nil];
+            personInfoDown = [[WBHTTP_Request_Block alloc] initWithURlString:USERS_SHOW andArguments:dic];
+            [personInfoDown setBlock:^(NSMutableData *datas, float progressNum) {
+                [personVC loadUserInfoData:datas];
+            }];
+            break;
+        }
+        case ReachableViaWiFi:
+        {
+            NSLog(@"使用WiFi网络！");
+            __weak PersonalViewController *personVC = self;
+            NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+            NSString *uerId = [defaults objectForKey:@"userID"];
+            NSDictionary *dic = [NSDictionary dictionaryWithObjectsAndKeys:uerId,@"uid", nil];
+            personInfoDown = [[WBHTTP_Request_Block alloc] initWithURlString:USERS_SHOW andArguments:dic];
+            [personInfoDown setBlock:^(NSMutableData *datas, float progressNum) {
+                [personVC loadUserInfoData:datas];
+            }];
+            break;
+        }
+        default:
+            break;
+    }
+    
+    
+    
+    
     _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, 320, 568-64) style:UITableViewStylePlain];
     _tableView.dataSource=self;
     _tableView.delegate=self;
     [self.view addSubview:_tableView];
-//    [self loadWeiboContextData];
 }
 
--(void)loadWeiboContextData
++ (NSString *)getUserInfoPath
 {
-//    NSUserDefaults *user = [NSUserDefaults standardUserDefaults];
-//    NSString *accessToken = [user objectForKey:@"accessToken"];
-//    NSDictionary *params = [NSDictionary dictionaryWithObjectsAndKeys:@"20",@"count",nil];
-//    [WBHttpRequest requestWithAccessToken:accessToken url:@"https://api.weibo.com/2/statuses/friends_timeline.json" httpMethod:@"GET" params:params delegate:self];
+    NSString *str = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
+    NSString *path = [str stringByAppendingPathComponent:@"PersonalInfo"];
+    NSFileManager *file = [NSFileManager defaultManager];
+    if (![file fileExistsAtPath:path]) {
+        [file createDirectoryAtPath:path withIntermediateDirectories:YES attributes:nil error:nil];
+        return path;
+    }
+    else return path;
     
 }
-#pragma mark--WBHttpRequestDelegate
--(void)request:(WBHttpRequest *)request didFailWithError:(NSError *)error
+
+ImageDownload *imageDownLoad;
+ImageDownload *weiboImageDownload;
+ImageDownload *retWeiboImage;
+- (void)loadUserInfoData:(NSMutableData *)data
 {
+    NSError *error = nil;
+    NSDictionary *dic = [[NSDictionary alloc] initWithDictionary:[NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error]];
     
-}
--(void)request:(WBHttpRequest *)request didReceiveResponse:(NSURLResponse *)response
-{
+    _userInfo = [[UserInfo alloc] initWithUser:dic];
+    NSDictionary *weiboDic = [dic objectForKey:@"status"];
+    _weiboContex = [[WeiBoContext alloc] initWithWeibo:weiboDic];
+
+    __weak PersonalViewController *personalVC = self;
+    imageDownLoad = [[ImageDownload alloc] initWithURlString:_userInfo.profile_image_url];
+    [imageDownLoad setBlock:^(NSMutableData *datas, float progressNum) {
+        [personalVC getHeadImage:datas];
+    }];
     
-}
--(void)request:(WBHttpRequest *)request didFinishLoadingWithResult:(NSString *)result
-{
-    SBJsonParser *parser = [[SBJsonParser alloc]init];
-    NSDictionary *dic = [parser objectWithString:result];
-    NSDictionary *statuses = [dic objectForKey:@"statuses"];
-     NSLog(@"%@",statuses);
-    NSMutableArray *contexts = [[NSMutableArray alloc]init];
-    for (NSDictionary *statuse in statuses)
+    if (_weiboContex.thumbnail_pic.length > 0) {
+        ImageDownload *weiboImageDownload = [[ImageDownload alloc] initWithURlString:_weiboContex.thumbnail_pic];
+        [weiboImageDownload setBlock:^(NSMutableData *datas, float progressNum) {
+            [personalVC getWeiboImage:datas andType:@"weiboImage"];
+        }];
+    }
+    else
     {
-        WeiBoContext *weibo = [[WeiBoContext alloc]initWithWeibo:statuse];
-        [contexts addObject:weibo];
+        if (_weiboContex.retweeted_status != nil) {
+            _weiboContex.retweetedWeibo = [[WeiBoContext alloc] initWithWeibo:(NSDictionary *)_weiboContex.retweeted_status];
+            if (_weiboContex.retweetedWeibo.thumbnail_pic.length > 0) {
+                retWeiboImage = [[ImageDownload alloc] initWithURlString:_weiboContex.thumbnail_pic];
+                [retWeiboImage setBlock:^(NSMutableData *datas, float progressNum) {
+                    [personalVC getWeiboImage:datas andType:@"retWeiboImage"];
+                }];
+            }
+        }
     }
     
     
-    WeiBoContext *context = [contexts objectAtIndex:0];
-    _userInfo = context.userInfo;
-   
+    NSFileManager *file = [NSFileManager defaultManager];
+    NSString *str = [PersonalViewController getUserInfoPath];
+    NSString *path = [str stringByAppendingPathComponent:@"userInfo"];
+    if (![file fileExistsAtPath:path])
+    {
+        [file createFileAtPath:path contents:data attributes:nil];
+    }
+    else [data writeToFile:path atomically:YES];
+}
+
+- (void)getHeadImage:(NSMutableData *)data
+{
+    NSString *path = [PersonalViewController getUserInfoPath];
+    NSString *headImagePath = [path stringByAppendingPathComponent:@"myself.jpg"];
+    NSFileManager *file = [NSFileManager defaultManager];
+    if (![file fileExistsAtPath:headImagePath]) {
+        [file createFileAtPath:headImagePath contents:data attributes:nil];
+    }
+    
+    UIImage *image = [UIImage imageWithData:data];
+    _userInfo.headImage = image;
     [_tableView reloadData];
 }
+
+-(void)getWeiboImage:(NSMutableData *)data andType:(NSString *)type
+{
+    UIImage *image = [UIImage imageWithData:data];
+    if ([type isEqualToString:@"weiboImage"]) {
+        NSString *path = [PersonalViewController getUserInfoPath];
+        NSString *str = [_weiboContex.idstr stringByAppendingFormat:@".jpg"];
+        NSString *weiboImagePath = [path stringByAppendingPathComponent:str];
+        NSFileManager *file = [NSFileManager defaultManager];
+        if (![file fileExistsAtPath:weiboImagePath]) {
+            [file createFileAtPath:weiboImagePath contents:data attributes:nil];
+        }
+        _weiboContex.thumbnailImage = image;
+    }
+    if ([type isEqualToString:@"retWeiboImage"]) {
+        NSString *path = [PersonalViewController getUserInfoPath];
+        NSString *str = [_weiboContex.retweetedWeibo.idstr stringByAppendingFormat:@".jpg"];
+        NSString *retWeiboImagePath = [path stringByAppendingPathComponent:str];
+        NSFileManager *file = [NSFileManager defaultManager];
+        if (![file fileExistsAtPath:retWeiboImagePath]) {
+            [file createFileAtPath:retWeiboImagePath contents:data attributes:nil];
+        }
+        _weiboContex.retweetedWeibo.thumbnailImage = image;
+        
+    }
+    [_tableView reloadData];
+}
+
 
 #pragma mark -- UITableViewDataSource,UITableViewDelegate
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
@@ -98,8 +214,9 @@
         //封面背景
         UIImageView *backgroundView = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, 320, 150)];
         backgroundView.backgroundColor = [UIColor redColor];
-#warning  图片未设
-    
+        NSString *str = [[NSBundle mainBundle] pathForResource:@"1" ofType:@"jpg"];
+        UIImage *image = [UIImage imageWithContentsOfFile:str];
+        backgroundView.image = image;
         [_tableView addSubview:backgroundView];
         
         //头像
@@ -108,7 +225,7 @@
         headImageV.layer.borderColor = [UIColor whiteColor].CGColor;
         headImageV.layer.borderWidth = 1;
         headImageV.layer.cornerRadius = 2;
-        [headImageV setImageWithURL:[NSURL URLWithString:_userInfo.profile_image_url]];
+        headImageV.image = _userInfo.headImage;
         [_tableView addSubview:headImageV];
     
         //昵称
@@ -141,6 +258,7 @@
              verifiedImage.Image=[UIImage imageNamed:@"userinfo_membership_expired"];
         }
         [_tableView addSubview:verifiedImage];
+        
         //个人信息
         UIButton *editUserInfo = [UIButton buttonWithType:UIButtonTypeCustom];
         editUserInfo.frame = CGRectMake(120, 160, 82, 30);
@@ -151,6 +269,7 @@
         [editUserInfo setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
         [editUserInfo addTarget:self action:@selector(userInformation) forControlEvents:UIControlEventTouchUpInside];
         [_tableView addSubview:editUserInfo];
+        
         //关注、粉丝等数量
         NSArray *title = [[NSArray alloc] initWithObjects:@"粉丝数", @"微博数",@"关注",@"收藏",@"互粉数",nil];
         
@@ -176,15 +295,24 @@
             [_tableView addSubview:nameLabel];
             [_tableView addSubview:countLabel];
         }
-        
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+        return cell;
     }
 
     //微博正文
-    if (indexPath.row==1)
-    {
-        
-    }
-    cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    else
+        if(indexPath.row==1)
+        {
+            static NSString *cellIndentify = @"CellIndentify";
+            WeiboCell *cellTest = [tableView dequeueReusableCellWithIdentifier:cellIndentify];
+            if (cellTest  == nil) {
+                cellTest = [[WeiboCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIndentify];
+                if (_weiboContex != nil) {
+                    [cellTest viewWeiboContex:_weiboContex];
+                }
+            }
+            return cellTest;
+        }
     return cell;
 }
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath

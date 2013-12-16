@@ -24,6 +24,7 @@
         _description = [dic objectForKey:@"description"];
         _url = [dic objectForKey:@"url"];
         _profile_image_url = [dic objectForKey:@"profile_image_url"];
+        _headImage = [[UIImage alloc] init];
         _profile_url = [dic objectForKey:@"profile_url"];
         _domain = [dic objectForKey:@"domain"];
         _weihao = [dic objectForKey:@"weihao"];

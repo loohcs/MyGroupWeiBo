@@ -10,6 +10,7 @@
 #import "HomeViewController.h"
 #import "AppDelegate.h"
 #import "UIViewExt.h"
+#import "DraftsViewController.h"
 #define SCROLLWIDTH 320
 #define SCROLLHEIGHT 180
 @interface WriteViewController ()
@@ -41,6 +42,8 @@
     UIView *view = [[UIView alloc]initWithFrame:CGRectMake(0, 568-49, 320, 49)];
     [self.view addSubview:view];
     _strArr = [[NSMutableArray alloc]init];
+    
+    
 }
 
 //设置导航栏以及标题
@@ -313,7 +316,7 @@
 
 -(void)atSomeBody
 {
-    
+    _textView.text = [_textView.text stringByAppendingFormat:@"@"];
 }
 
 -(void)emotions
@@ -341,6 +344,75 @@
 
 -(void)more
 {
+    
+}
+
+- (void)backToHomeView
+{
+    //TODO: 在返回主页面之前，我们应该判断在键盘中我们有没有输入文字
+    //如果没有，那么直接返回主页面
+    if (_textView.text.length == 0) {
+        [self dismissViewControllerAnimated:YES completion:nil];
+    }
+    
+    //如果文字信息存在，则应该提示，是否需要将文字信息存入草稿箱。
+    if (_textView.text.length > 0) {
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"是否存入草稿箱" message:@"草稿箱" delegate:self cancelButtonTitle:@"否" otherButtonTitles:@"是", nil];
+        [alertView show];
+    }
+    
+    
+}
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    switch (buttonIndex) {
+        case 0:
+            [self dismissViewControllerAnimated:YES completion:nil];
+            break;
+        case 1:
+        {
+            if (_style != 0)
+            {
+                NSDictionary *dic = [[NSDictionary alloc] initWithObjectsAndKeys:[NSNumber numberWithInt:_style],@"type", _weiboContext.userInfo.name, @"writer", _weiboContext.idstr, @"weiboID", _textView.text,@"text",  nil];
+                [self putDataInDrafts:dic];
+            }
+            else
+            {
+                NSDictionary *dic = [[NSDictionary alloc] initWithObjectsAndKeys:[NSNumber numberWithInt:_style],@"type", _textView.text,@"text",nil];
+                [self putDataInDrafts:dic];
+            }
+            [self dismissViewControllerAnimated:YES completion:nil];
+            break;
+        }
+        default:
+            break;
+    }
+}
+
+- (void)putDataInDrafts:(NSDictionary *)dic
+{
+    NSString *path = [DraftsViewController getPath];
+    //NSMutableData *data = [[NSMutableData alloc] init];
+    
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    
+    if (![fileManager fileExistsAtPath:path])
+    {
+        [fileManager createFileAtPath:path contents:nil attributes:nil];
+        NSMutableArray *array = [[NSMutableArray alloc] init];
+        [array addObject:dic];
+        NSDictionary *dicTemp = [[NSDictionary alloc] initWithObjectsAndKeys:array,@"weibo", nil];
+        [dicTemp writeToFile:path atomically:YES];
+    }
+    else
+    {
+        NSMutableDictionary *draftDic = [[[NSMutableDictionary alloc] initWithContentsOfFile:path] mutableCopy];
+        NSMutableArray *array = [[NSMutableArray alloc]initWithArray:[draftDic objectForKey:@"weibo"]];
+        [array addObject:dic];
+        [draftDic setObject:array forKey:@"weibo"];
+        [draftDic writeToFile:path atomically:YES];
+    }
     
 }
 
@@ -453,11 +525,6 @@
     NSLog(@"%@", error);
 }
 
-- (void)backToHomeView
-{
-    [self dismissViewControllerAnimated:YES completion:nil];
-    //[self.navigationController popViewControllerAnimated:YES];
-}
 
 - (void)didReceiveMemoryWarning
 {

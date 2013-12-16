@@ -40,6 +40,10 @@
     UIBarButtonItem *returnItem = [[UIBarButtonItem alloc] initWithCustomView:returnView];
     self.navigationItem.leftBarButtonItem=returnItem;
     
+    NSString *path = [NSString stringWithString:[DraftsViewController getPath]];
+    NSDictionary *dic = [[NSDictionary alloc] initWithContentsOfFile:path];
+    _dataInDrafts = [[NSMutableArray alloc] initWithArray:[dic objectForKey:@"weibo"]];
+    
     _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, 320, 504) style:UITableViewStylePlain];
     self.tableView.dataSource = self;
     self.tableView.delegate = self;
@@ -48,17 +52,17 @@
     self.tableView.canPullUp = YES;
     [self.view addSubview:_tableView];
     
-    
-    
 }
 
-- (NSString *)getPath
++ (NSString *)getPath
 {
     NSString *str = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
-    NSString *path = [str stringByAppendingPathComponent:@"dataInDraft"];
+    NSString *path = [str stringByAppendingPathComponent:@"dataInDraft.plist"];
     
     return path;
 }
+
+
 
 -(void)setNaTitle
 {
@@ -72,28 +76,13 @@
     [titleView addSubview:label];
     self.navigationItem.titleView =titleView;
 }
+
 -(void)returnV
 {
     [self.navigationController popViewControllerAnimated:YES];
 }
 
-- (void)putDataInDrafts:(NSMutableData *)data
-{
-    NSString *path = [self getPath];
-    
-    
-    NSFileManager *fileManager = [NSFileManager defaultManager];
-    
-    if (![fileManager fileExistsAtPath:path])
-    {
-        [fileManager createFileAtPath:path contents:data attributes:nil];
-    }
-    else
-    {
-        [data writeToFile:path atomically:YES];
-    }
-    
-}
+
 
 #pragma mark -- UITableViewDelegete || UITableViewDataSource
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
@@ -103,28 +92,73 @@
 
 - (float)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return 80;
+    return 60;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     
-    return 1;
+    return _dataInDrafts.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     //    NSLog(@"%s", __func__);
     static NSString *identify = @"WeiboCell";
-    WeiboCell *cell = [tableView dequeueReusableCellWithIdentifier:identify];
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:identify];
     if (cell == nil) {
-        cell = [[WeiboCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identify];
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:identify];
     }
-    
+    NSDictionary *dic = [_dataInDrafts objectAtIndex:indexPath.row];
+    cell.detailTextLabel.text = [dic objectForKey:@"text"];
+    int type = [[dic objectForKey:@"type"] intValue];
+    switch (type) {
+        case 0:
+            cell.textLabel.text = @"微博";
+            break;
+        case 1:
+        {
+            NSString *writer = [dic objectForKey:@"writer"];
+            cell.textLabel.text = [NSString stringWithFormat:@"转发微博@%@", writer];
+            break;
+        }
+        case 2:
+        {
+            NSString *writer = [dic objectForKey:@"writer"];
+            cell.textLabel.text = [NSString stringWithFormat:@"评论@%@", writer];
+            break;
+        }
+        default:
+            break;
+    }
     return cell;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    
+    WriteViewController *writeView = [[WriteViewController alloc]init];
+    NSDictionary *dic = [_dataInDrafts objectAtIndex:indexPath.row];
+    int type = [[dic objectForKey:@"type"] intValue];
+    switch (type) {
+        case 0:
+            writeView.title = @"发微博";
+            break;
+        case 1:
+        {
+            writeView.title = @"转发微博";
+            
+            
+            break;
+        }
+        case 2:
+        {
+            
+            break;
+        }
+        default:
+            break;
+    }
+    UINavigationController *naVC = [[UINavigationController alloc]initWithRootViewController:writeView];
+    [naVC.navigationBar setBackgroundImage:[UIImage imageNamed:@"navigationbar_background"] forBarMetrics:UIBarMetricsDefault];
+    [self presentViewController:naVC animated:YES completion:nil];
 }
 
 - (void)didReceiveMemoryWarning

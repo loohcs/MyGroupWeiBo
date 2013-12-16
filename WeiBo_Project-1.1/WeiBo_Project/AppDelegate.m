@@ -66,7 +66,7 @@
 {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     [defaults setObject:((WBAuthorizeResponse *)response).accessToken forKey:@"accessToken"];
-    NSLog(@"accessToken = %@", [defaults objectForKey:@"accessToken"]);
+    [defaults setObject:((WBAuthorizeResponse *)response).userID forKey:@"userID"];
     CustomTabbarController *tabBar = [[CustomTabbarController alloc]init];
     
     UINavigationController *naviController = [[UINavigationController alloc] initWithRootViewController:tabBar];

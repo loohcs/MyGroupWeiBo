@@ -13,6 +13,7 @@
 {
     UITableView *_tableView;
 }
-@property(nonatomic,retain)UserInfo *userInfo;
+@property (nonatomic, strong)UserInfo *userInfo;
+@property (nonatomic, strong)WeiBoContext *weiboContex;
 
 @end

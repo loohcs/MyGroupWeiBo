@@ -54,11 +54,19 @@
 
 #import "UIScrollView+PullLoad.h"
 
+#import "Reachability.h"//检查网络状态
+
 #define kAppKey         @"3531528783"
 #define kRedirectURI    @"https://api.weibo.com/oauth2/default.html"
 
 //返回最新的200条公共微博，返回结果非完全实时
 #define STATUSES_PUBLIC_TIMELINE  @"https://api.weibo.com/2/statuses/public_timeline.json"
+
+//获得我的微博
+#define STATUSES_USER_TIMELINE @"https://api.weibo.com/2/statuses/user_timeline.json"
+
+//获得当前用户及其所关注用户的最新微博
+#define STATUSES_HOME_TIMELINE @"https://api.weibo.com/2/statuses/home_timeline.json"
 
 //发布一条微博信息
 #define STATUSES_UPDATA  @"https://api.weibo.com/2/statuses/update.json"

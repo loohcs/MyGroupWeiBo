@@ -21,15 +21,6 @@
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // Custom initialization
-        weiboContextsArr = [[NSMutableArray alloc] init];
-        _receivedData = [[NSMutableData alloc] init];
-        _weiboCount = 0;
-        
-        middleFlag = 0;
-        rightFlag = 0;
-        flag = 0;
-        middleTableV=[[UITableView alloc]initWithFrame:CGRectMake(110, 0, 100, 120) style:UITableViewStyleGrouped];
-        rightTableV = [[UITableView alloc] initWithFrame:CGRectMake(230, 0, 80, 100) style:UITableViewStyleGrouped];
     }
     return self;
 }
@@ -45,8 +36,9 @@
     middleFlag = 0;
     rightFlag = 0;
     flag = 0;
-    middleTableV=[[UITableView alloc]initWithFrame:CGRectMake(110, 0, 100, 120) style:UITableViewStyleGrouped];
-    rightTableV = [[UITableView alloc] initWithFrame:CGRectMake(230, 0, 80, 100) style:UITableViewStyleGrouped];
+    middleView = [[UITableView alloc] initWithFrame:CGRectMake(110, 0, 100, 120) style:UITableViewStyleGrouped];
+    rightView = [[UITableView alloc] initWithFrame:CGRectMake(230, 0, 80, 100) style:UITableViewStyleGrouped];
+    //rightView.backgroundColor = [UIColor cyanColor];
     
     
     self.view.backgroundColor = [UIColor lightGrayColor];
@@ -54,7 +46,29 @@
     [self initWithButtonAndTitle];
     self.navigationItem.title = @"";
     
-    [self getTimelineWeibo:@"statuses_friends_timeline"];
+    Reachability *reachability = [Reachability reachabilityWithHostName:@"www.sina.com"];
+    switch ([reachability currentReachabilityStatus]) {
+        case NotReachable:
+        {
+            NSLog(@"没有网络连接!");
+            weiboContextsArr = [WeiboDataBase findAll];
+            break;
+        }
+        case ReachableViaWWAN:
+        {
+            NSLog(@"使用3G网络!");
+            [self getTimelineWeibo:@"statuses_friends_timeline"];
+            break;
+        }
+        case ReachableViaWiFi:
+        {
+            NSLog(@"使用WiFi网络!");
+            [self getTimelineWeibo:@"statuses_friends_timeline"];
+            break;
+        }
+        default:
+            break;
+    }
     
     //初始化tableview
     _tableView = [[UITableView alloc]initWithFrame:self.view.bounds style:UITableViewStyleGrouped];
@@ -64,8 +78,8 @@
     _tableView.canPullDown = YES;
     _tableView.canPullUp = YES;
     [self.view addSubview:_tableView];
+    
 }
-
 
 - (void)getTimelineWeibo:(NSString *)type
 {
@@ -81,6 +95,16 @@
         statuses = [[WBHTTP_Request_Block alloc] initWithURlString:STATUSES_PUBLIC_TIMELINE andArguments:dic];
         NSLog(@"%@", STATUSES_PUBLIC_TIMELINE);
     }
+    if ([type isEqualToString:@"statuses_user_timeline"]) {
+        NSDictionary *dic = [[NSDictionary alloc] initWithObjectsAndKeys:@"100",@"count", nil];
+        statuses = [[WBHTTP_Request_Block alloc] initWithURlString:STATUSES_USER_TIMELINE andArguments:dic];
+        NSLog(@"%@", STATUSES_USER_TIMELINE);
+    }
+    if ([type isEqualToString:@"statuses_home_timeline"]) {
+        NSDictionary *dic = [[NSDictionary alloc] initWithObjectsAndKeys:@"100",@"count", nil];
+        statuses = [[WBHTTP_Request_Block alloc] initWithURlString:STATUSES_HOME_TIMELINE andArguments:dic];
+        NSLog(@"%@", STATUSES_HOME_TIMELINE);
+    }
     
     __weak HomeViewController *homeVC = self;
     //[WeiboDataBase createWeiboTable];
@@ -88,10 +112,7 @@
      {
          [homeVC getWeiboContex:datas];
      }];
-    
-    
-    
-    
+
     //[WeiboDataBase findAll];
 }
 
@@ -109,18 +130,43 @@
     
     NSArray *weiboArr = [NSArray arrayWithArray:[dic objectForKey:@"statuses"]];
     weiboContextsArr = [[NSMutableArray alloc] init];
-    //[WeiboDataBase createWeiboTable];
     
-    for (int i = 0; i <_weiboCount+20; i++) {
-        //获得微博正文
-        NSDictionary *weiboDic = [NSDictionary dictionaryWithDictionary:[weiboArr objectAtIndex:i]];
-        WeiBoContext *oneWeiboContex = [[WeiBoContext alloc] initWithWeibo:weiboDic];
-        [weiboContextsArr addObject:oneWeiboContex];
-        
-        //判断是否是转发微博，如果是，则将字符串的转发微博初始化为WeiboContex类型
-        if (oneWeiboContex.retweeted_status != nil) {
-            oneWeiboContex.retweetedWeibo = [[WeiBoContext alloc] initWithWeibo:(NSDictionary *)oneWeiboContex.retweeted_status];
-            [weiboContextsArr replaceObjectAtIndex:i withObject:oneWeiboContex];
+    [WeiboDataBase createWeiboTable];
+    if (weiboArr.count > _weiboCount+20) {
+        for (int i = 0; i <_weiboCount+20; i++) {
+            //获得微博正文
+            NSDictionary *weiboDic = [NSDictionary dictionaryWithDictionary:[weiboArr objectAtIndex:i]];
+            WeiBoContext *oneWeiboContex = [[WeiBoContext alloc] initWithWeibo:weiboDic];
+            [weiboContextsArr addObject:oneWeiboContex];
+            
+            //判断是否是转发微博，如果是，则将字符串的转发微博初始化为WeiboContex类型
+            if (oneWeiboContex.retweeted_status != nil) {
+                oneWeiboContex.retweetedWeibo = [[WeiBoContext alloc] initWithWeibo:(NSDictionary *)oneWeiboContex.retweeted_status];
+                [weiboContextsArr replaceObjectAtIndex:i withObject:oneWeiboContex];
+                
+                [WeiboDataBase addWithWeibo:oneWeiboContex.retweetedWeibo];
+            }
+            
+            [WeiboDataBase addWithWeibo:oneWeiboContex];
+        }
+    }
+    else
+    {
+        for (int i = 0; i <weiboArr.count; i++) {
+            //获得微博正文
+            NSDictionary *weiboDic = [NSDictionary dictionaryWithDictionary:[weiboArr objectAtIndex:i]];
+            WeiBoContext *oneWeiboContex = [[WeiBoContext alloc] initWithWeibo:weiboDic];
+            [weiboContextsArr addObject:oneWeiboContex];
+            
+            //判断是否是转发微博，如果是，则将字符串的转发微博初始化为WeiboContex类型
+            if (oneWeiboContex.retweeted_status != nil) {
+                oneWeiboContex.retweetedWeibo = [[WeiBoContext alloc] initWithWeibo:(NSDictionary *)oneWeiboContex.retweeted_status];
+                [weiboContextsArr replaceObjectAtIndex:i withObject:oneWeiboContex];
+                
+                [WeiboDataBase addWithWeibo:oneWeiboContex.retweetedWeibo];
+            }
+            
+            [WeiboDataBase addWithWeibo:oneWeiboContex];
         }
     }
     
@@ -137,6 +183,7 @@
 {
     
 #warning mark -- 因为下载图片是通过块的调用来实现的，具有一定的延时性。而且下载的图片都是按照顺序一张张下载的，所以我们在下载图片的同时，我们需要确定下载的本张图片到底是属于那一份微博。（目前，我们在微博中使用的都只是缩略图，并未使用图片数组，即pic_urls下载得到的weiboPics。使用数组时，在将图片贴到自定义的weiboCell上会出现一点点小问题，就是多张图片贴的时候会有时混乱。暂定解决思路：在init方法中就定义好九个imageView，然后通过switch语句，依次将图片贴上）
+    
     __weak HomeViewController *homeVC = self;
     
     
@@ -185,23 +232,49 @@
     
 }
 
+//准备路径，将所有下载的图片存入本地沙盒中
+//获取头像图片存放地址
++ (NSString *)getImagePath:(NSString *)type
+{
+    NSFileManager *file = [NSFileManager defaultManager];
+    NSString *path = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
+    NSString *imageDirectory = [path stringByAppendingPathComponent:@"images"];
+    if ([type isEqualToString:@"headImage"]) {
+        NSString *headImage = [imageDirectory stringByAppendingPathComponent:@"headImage"];
+        if (![file fileExistsAtPath:headImage]) {
+            [file createDirectoryAtPath:headImage withIntermediateDirectories:YES attributes:nil error:nil];
+            return headImage;
+        }
+        else return headImage;
+    }
+    else
+    {
+        NSString *weiboImage = [imageDirectory stringByAppendingPathComponent:@"weiboImage"];
+        if (![file fileExistsAtPath:weiboImage]) {
+            [file createDirectoryAtPath:weiboImage withIntermediateDirectories:YES attributes:nil error:nil];
+            return weiboImage;
+        }
+        else return weiboImage;
+    }
+    
+
+}
+
+
 
 //通过块的调用，将数据传入方法中，实现头像图片的获取
 - (void)getHeadImage:(NSMutableData *)data andIndex:(int)index
 {
-    //    //Test
-    //    NSString *str = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
-    //    NSString *path = [str stringByAppendingPathComponent:[NSString stringWithFormat:@"headImage_%d.jpg", index]];
-    //    NSFileManager *fileManager = [NSFileManager defaultManager];
-    //    if (![fileManager fileExistsAtPath:path]) {
-    //        [fileManager createFileAtPath:path contents:data attributes:nil];
-    //    }
-    //    else
-    //    {
-    //        [data writeToFile:path atomically:YES];
-    //    }
-    
-    //NSLog(@"-----------headImage--------%d", index);
+
+    NSFileManager *file = [NSFileManager defaultManager];
+    WeiBoContext *weiboContexTemp = [weiboContextsArr objectAtIndex:index];
+    NSString *str = weiboContexTemp.userInfo.userIDstr;
+    NSString *str2 = [str stringByAppendingFormat:@".jpg"];
+    NSString *path = [HomeViewController getImagePath:@"headImage"];
+    NSString *imagePath = [path stringByAppendingPathComponent:str2];
+    if (![file fileExistsAtPath:imagePath]) {
+        [file createFileAtPath:imagePath contents:data attributes:nil];
+    }
     UIImage *image = [UIImage imageWithData:data];
     if (index < weiboContextsArr.count) {
         WeiBoContext *oneWeiboContex = [weiboContextsArr objectAtIndex:index];
@@ -219,21 +292,20 @@
 - (void)getThumbnailImage:(NSMutableData *)data andIndex:(int)index
 {
     
-#warning mark -- 每次执行本方法的时候，从块中得到的数据是块在上一次下载之后遗留下得数据，因此在界面中就显示出，所有图片都是上一趟运行时应该具有的图片，而本次图片的显示则会出现在下一次的运行之中。
+//已经解决
+//#warning mark -- 每次执行本方法的时候，从块中得到的数据是块在上一次下载之后遗留下得数据，因此在界面中就显示出，所有图片都是上一趟运行时应该具有的图片，而本次图片的显示则会出现在下一次的运行之中。
+
     
-    //    //Test
-    //    NSString *str = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
-    //    NSString *path = [str stringByAppendingPathComponent:[NSString stringWithFormat:@"thumbnailImage_%d.jpg", index]];
-    //    NSFileManager *fileManager = [NSFileManager defaultManager];
-    //    if (![fileManager fileExistsAtPath:path]) {
-    //        [fileManager createFileAtPath:path contents:data attributes:nil];
-    //    }
-    //    else
-    //    {
-    //        [data writeToFile:path atomically:YES];
-    //    }
+    NSFileManager *file = [NSFileManager defaultManager];
+    WeiBoContext *weiboContexTemp = [weiboContextsArr objectAtIndex:index];
+    NSString *str = weiboContexTemp.idstr;
+    NSString *str2 = [str stringByAppendingFormat:@".jpg"];
+    NSString *path = [HomeViewController getImagePath:@"weiboImage"];
+    NSString *imagePath = [path stringByAppendingPathComponent:str2];
+    if (![file fileExistsAtPath:imagePath]) {
+        [file createFileAtPath:imagePath contents:data attributes:nil];
+    }
     
-    //NSLog(@"-----------ThumbnailImage--------%d", index);
     UIImage *image = [[UIImage alloc] initWithData:data];
     if (data.length > 0) {
         WeiBoContext *oneWeiboContex = [weiboContextsArr objectAtIndex:index];
@@ -257,20 +329,17 @@
 //通过块的调用，将数据传入方法中，实现转发微博缩略图片的获取与加载
 - (void)getRetWeiboThumbImage:(NSMutableData *)data andIndex:(int)index
 {
-    //NSLog(@"-----------retWeiboThumbImage--------%d", index);
+    NSFileManager *file = [NSFileManager defaultManager];
+    WeiBoContext *weiboContexTemp = [weiboContextsArr objectAtIndex:index];
+    NSString *str = weiboContexTemp.retweetedWeibo.idstr;
+    NSString *str2 = [str stringByAppendingFormat:@".jpg"];
+    NSString *path = [HomeViewController getImagePath:@"weiboImage"];
+    NSString *imagePath = [path stringByAppendingPathComponent:str2];
+    if (![file fileExistsAtPath:imagePath]) {
+        [file createFileAtPath:imagePath contents:data attributes:nil];
+    }
+    
     if (data.length > 0) {
-        
-        //        //Test
-        //        NSString *str = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
-        //        NSString *path = [str stringByAppendingPathComponent:[NSString stringWithFormat:@"retWeiboThumb_%d.jpg", index]];
-        //        NSFileManager *fileManager = [NSFileManager defaultManager];
-        //        if (![fileManager fileExistsAtPath:path]) {
-        //            [fileManager createFileAtPath:path contents:data attributes:nil];
-        //        }
-        //        else
-        //        {
-        //            [data writeToFile:path atomically:YES];
-        //        }
         
         WeiBoContext *oneWeiboContex = [weiboContextsArr objectAtIndex:index];
         oneWeiboContex.retweetedWeibo.thumbnailImage = [[UIImage alloc] init];
@@ -457,6 +526,7 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
     WeiboContexViewController *weiboVC = [[WeiboContexViewController alloc] init];
     UINavigationController *navc = [[UINavigationController alloc]initWithRootViewController:weiboVC];
     navc.navigationBarHidden = YES;
@@ -552,6 +622,8 @@
     [writeBtnView addSubview:writeBtn];
     UIBarButtonItem *writeItem = [[UIBarButtonItem alloc]initWithCustomView:writeBtnView];
     self.navigationItem.leftBarButtonItem = writeItem;
+    
+    
     //middle
     UIView *titleView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 150, 44)];
     titleView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"navigationbar_background"]];
@@ -574,6 +646,7 @@
     [middleButton addSubview:imageView];
     self.navigationItem.titleView = titleView;
     
+    
     //right
     UIView *rightBtnView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 60, 44)];
     UIButton *rightBtn = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -587,8 +660,7 @@
     
 }
 
-
-
+//TODO: 左边按钮响应方法
 -(void)leftButtonAction
 {
     WriteViewController *writeView = [[WriteViewController alloc]init];
@@ -597,45 +669,106 @@
     [self presentViewController:naVC animated:YES completion:nil];
 }
 
+//TODO: 中间按钮响应的方法
 -(void)middleButtonAction
 {
-    //    _array = [[NSMutableArray array] initWithObjects:@"首页",@"好友圈",@"我的微博",@"周边微博", @"特别关注",@"同事",@"名人明星",@"同学",@"悄悄关注",@"智能排行",nil];
-    //    middleTableV.rowHeight=10;
-    //    middleTableV.delegate=self;
-    //    middleTableV.dataSource=self;
-    
     NSString *path = [[NSBundle mainBundle] pathForResource:@"popover_background_os7@2x" ofType:@"png"];
     UIImage *image = [UIImage imageWithContentsOfFile:path];
     UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(100, 0, 100, 120)];
     imageView.image = image;
-    [middleTableV setBackgroundView:imageView];
+    [middleView setBackgroundView:imageView];
+    
+    UIButton *homePage = [UIButton buttonWithType:UIButtonTypeCustom];
+    homePage.frame = CGRectMake(5, 20, 100, 20);
+    homePage.titleLabel.font = [UIFont systemFontOfSize:12.0f];
+    [homePage setTitle:@"首页" forState:UIControlStateNormal];
+    [homePage addTarget:self action:@selector(getHomeWeibo) forControlEvents:UIControlEventTouchUpInside];
+    [middleView addSubview:homePage];
+    
+    UIButton *eachOther = [UIButton buttonWithType:UIButtonTypeCustom];
+    eachOther.frame = CGRectMake(5, 45, 100, 20);
+    eachOther.titleLabel.font = [UIFont systemFontOfSize:12.0f];
+    [eachOther setTitle:@"互相关注" forState:UIControlStateNormal];
+    [eachOther addTarget:self action:@selector(getFriendsWeibo) forControlEvents:UIControlEventTouchUpInside];
+    [middleView addSubview:eachOther];
+    
+    UIButton *myWeibo = [UIButton buttonWithType:UIButtonTypeCustom];
+    myWeibo.frame = CGRectMake(5, 70, 100, 20);
+    myWeibo.titleLabel.font = [UIFont systemFontOfSize:12.0f];
+    [myWeibo setTitle:@"我的微博" forState:UIControlStateNormal];
+    [myWeibo addTarget:self action:@selector(getMyWeibo) forControlEvents:UIControlEventTouchUpInside];
+    [middleView addSubview:myWeibo];
+    
+    UIButton *aroundWeibo = [UIButton buttonWithType:UIButtonTypeCustom];
+    aroundWeibo.frame = CGRectMake(5, 95, 100, 20);
+    aroundWeibo.titleLabel.font = [UIFont systemFontOfSize:12.0f];
+    [aroundWeibo setTitle:@"公共微博" forState:UIControlStateNormal];
+    [aroundWeibo addTarget:self action:@selector(getPublicWeibo) forControlEvents:UIControlEventTouchUpInside];
+    [middleView addSubview:aroundWeibo];
+    
     
     //中间的弹出框与右边的弹出框相互斥
     if (middleFlag == 0 && flag == 0) {
-        [self.view addSubview:middleTableV];
+        [self.view addSubview:middleView];
+        middleView.hidden = NO;
         middleFlag = 1;
         flag = 1;
     }
     else
         if (middleFlag == 0 && flag == 1)
         {
-            [rightTableV removeFromSuperview];
+            [rightView removeFromSuperview];
             rightFlag = 0;
-            [self.view addSubview:middleTableV];
+            [self.view addSubview:middleView];
+            middleView.hidden = NO;
             middleFlag = 1;
             
         }
         else
             if(middleFlag == 1)
             {
-                [middleTableV removeFromSuperview];
+                [middleView removeFromSuperview];
+                middleView.hidden = YES;
                 middleFlag = 0;
                 flag = 0;
             }
     
-    
 }
 
+//TODO: 获取不同类型的微博
+//获取用户以及他关注的用户微博
+- (void)getFriendsWeibo
+{
+    [self getTimelineWeibo:@"statuses_friends_timeline"];
+    self.navigationItem.title = @"好友圈";
+    [middleView removeFromSuperview];
+}
+
+//获取最新的公共微博
+- (void)getPublicWeibo
+{
+    [self getTimelineWeibo:@"statuses_public_timeline"];
+    self.navigationItem.title = @"公共微博";
+    [middleView removeFromSuperview];
+}
+
+//获取用户以及他关注用户的最新微博
+- (void)getHomeWeibo
+{
+    [self getTimelineWeibo:@"statuses_home_timeline"];
+    self.navigationItem.title = @"首页微博";
+    [middleView removeFromSuperview];
+}
+
+//获取用户的微博
+- (void)getMyWeibo
+{
+    [self getTimelineWeibo:@"statuses_user_timeline"];
+    self.navigationItem.title = @"我的微博";
+    [middleView removeFromSuperview];
+}
+
+//TODO: 右边按钮触发的方法
 -(void)rightButtonAction
 {
     
@@ -643,28 +776,55 @@
     UIImage *image = [UIImage imageWithContentsOfFile:path];
     UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(230, 0, 80, 100)];
     imageView.image = image;
-    [rightTableV setBackgroundView:imageView];
+    [rightView setBackgroundView:imageView];
+        
+    UIButton *refresh = [UIButton buttonWithType:UIButtonTypeCustom];
+    refresh.frame = CGRectMake(5, 20, 70, 20);
+    refresh.titleLabel.font = [UIFont systemFontOfSize:10.0f];
+    [refresh setTitle:@"刷新" forState:UIControlStateNormal];
+    [refresh addTarget:self action:@selector(PullDownLoadEnd) forControlEvents:UIControlEventTouchUpInside];
+    [rightView addSubview:refresh];
     
-    if (rightFlag == 0 && flag == 0) {
-        [self.view addSubview:rightTableV];
+    UIButton *sweep = [UIButton buttonWithType:UIButtonTypeCustom];
+    sweep.frame = CGRectMake(5, 45, 70, 20);
+    sweep.titleLabel.font = [UIFont systemFontOfSize:10.0f];
+    [sweep setTitle:@"扫一扫" forState:UIControlStateNormal];
+    [sweep addTarget:self action:nil forControlEvents:UIControlEventTouchUpInside];
+    [rightView addSubview:sweep];
+    
+    UIButton *rock = [UIButton buttonWithType:UIButtonTypeCustom];
+    rock.frame = CGRectMake(5, 70, 70, 20);
+    rock.titleLabel.font = [UIFont systemFontOfSize:10.0f];
+    [rock setTitle:@"摇一摇" forState:UIControlStateNormal];
+    [rock addTarget:self action:nil forControlEvents:UIControlEventTouchUpInside];
+    [rightView addSubview:rock];
+    
+    if (rightFlag == 0 && flag == 0)
+    {
+        [self.view addSubview:rightView];
         rightFlag = 1;
         flag = 1;
     }
     else
-        if (rightFlag == 0 && flag == 1) {
-            [middleTableV removeFromSuperview];
+    {
+        if (rightFlag == 0 && flag == 1)
+        {
+            [middleView removeFromSuperview];
             middleFlag = 0;
-            [self.view addSubview:rightTableV];
+            [self.view addSubview:rightView];
+            rightView.hidden = NO;
             rightFlag = 1;
             
         }
         else
             if(rightFlag == 1)
             {
-                [rightTableV removeFromSuperview];
+                //imageView.hidden = YES;
+                [rightView removeFromSuperview];
                 rightFlag = 0;
                 flag = 0;
             }
+    }
 }
 
 - (void)didReceiveMemoryWarning
