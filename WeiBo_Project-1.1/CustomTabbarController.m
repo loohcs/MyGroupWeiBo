@@ -80,13 +80,12 @@
 {
     HomeViewController *home = [[HomeViewController alloc]init];
     BaseNavigationViewController *homeNaVC = [[BaseNavigationViewController alloc]initWithRootViewController:home];
+    MessageViewController *message = [[MessageViewController alloc]init];
     
-    MessageViewController *message = [[MessageViewController alloc] init];
-    BaseNavigationViewController *messageNaVC = [[BaseNavigationViewController alloc] initWithRootViewController:message];
-    
+    BaseNavigationViewController *messageNaVC = [[BaseNavigationViewController alloc]initWithRootViewController:message];
     PersonalViewController *personal = [[PersonalViewController alloc]init];
-    BaseNavigationViewController *profileNaVC = [[BaseNavigationViewController alloc]initWithRootViewController:personal];
     
+    BaseNavigationViewController *profileNaVC = [[BaseNavigationViewController alloc]initWithRootViewController:personal];
     SquareViewController *square = [[SquareViewController alloc]init];
     
     BaseNavigationViewController *discoverNaVC = [[BaseNavigationViewController alloc]initWithRootViewController:square];
