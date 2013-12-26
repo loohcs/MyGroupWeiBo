@@ -1,15 +1,15 @@
 //
 //  MessageViewController.h
-//  SinaTwitterDemo
+//  WeiBo_Project
 //
-//  Created by xzx on 13-11-25.
-//  Copyright (c) 2013年 xzx. All rights reserved.
+//  Created by 1007 on 13-12-17.
+//  Copyright (c) 2013年 Ibokan. All rights reserved.
 //
 
-#import "BaseViewController.h"
+#import "BaseNavigationViewController.h"
 
-@interface MessageViewController : BaseViewController<UITableViewDelegate,UITableViewDataSource>
-{
-    IBOutlet UITableView *_tabView;
-}
+@interface MessageViewController : BaseNavigationViewController<UITableViewDataSource, UITableViewDelegate, PullDelegate>
+
+@property (nonatomic, strong)UITableView *tableView;
+
 @end
