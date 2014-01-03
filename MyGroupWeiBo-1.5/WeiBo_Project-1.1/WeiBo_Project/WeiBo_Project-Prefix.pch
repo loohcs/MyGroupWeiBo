@@ -1,0 +1,137 @@
+//
+// Prefix header for all source files of the 'WeiBo_Project' target in the 'WeiBo_Project' project
+//
+
+#import <Availability.h>
+
+#ifndef __IPHONE_3_0
+#warning "This project uses features only available in iOS SDK 3.0 and later."
+#endif
+
+#ifdef __OBJC__
+    #import <UIKit/UIKit.h>
+    #import <Foundation/Foundation.h>
+
+#import "WeiboSDK.h"
+
+#import "WeiboDataBase.h"//数据库的方法类
+#import "FMDatabase.h"
+#import "FMResultSet.h"
+
+#import "DeleteImageINBundle.h"//判断缓存大小，并进行删除过时文件
+
+#import "WeiBoContext.h"//微博内容的具体解析
+#import "Emotions.h"//表情的具体解析
+#import "UserInfo.h"//用户的个人信息具体解析
+#import "Comment.h"//评论的各种属性解析
+#import "Geo.h"//地理信息的具体解析
+
+
+#import "WBHTTP_Request_Block.h"//微博网络请求的块方法实现类
+#import "ImageDownload.h"//图片下载的块方法实现类
+
+#import "TQRichTextBaseRun.h"//富文本基本类
+#import "TQRichTextEmojiRun.h"//富文本表情处理类
+#import "TQRichTextImageRun.h"//富文本图片处理类
+#import "TQRichTextURLRun.h"//富文本文本处理类（@，##，URL）
+#import "TQRichTextView.h"//富文本显示label
+#import "CustomCell.h"//自定义cell，主要用于显示评论
+#import "WeiboCell.h"//自定义的微博cell
+//#import "WeiboView.h"//微博主页正文显示View
+#import "DateHelper.h"//时间日期辅助处理方法类
+#import "URLEncode.h"//将字符串封装成URLEncode类型
+
+#import "WeiboContexViewController.h"//微博正文页，显示内容包括微博正文以及评论等
+#import "WriteViewController.h"//发微博的界面，主要用于键盘，以及表情等得调用
+
+#import "CustomTabbarController.h"
+#import "HomeViewController.h"
+#import "MessageViewController.h"
+#import "PersonalViewController.h"
+#import "SquareViewController.h"
+#import "MoreViewController.h"
+#import "BaseNavigationController.h"
+
+#import "UIViewController+CreatCustomNaBar.h"
+
+#import "UIScrollView+PullLoad.h"
+
+#import "Reachability.h"//检查网络状态
+
+
+#define SCREEN_WIDTH [UIScreen mainScreen].bounds.size.width
+#define SCREEN_HEIGHT [UIScreen mainScreen].bounds.size.height
+
+#define kAppKey         @"3531528783"
+#define kRedirectURI    @"https://api.weibo.com/oauth2/default.html"
+
+//返回最新的200条公共微博，返回结果非完全实时
+#define STATUSES_PUBLIC_TIMELINE  @"https://api.weibo.com/2/statuses/public_timeline.json"
+
+//获得我的微博
+#define STATUSES_USER_TIMELINE @"https://api.weibo.com/2/statuses/user_timeline.json"
+
+//获得当前用户及其所关注用户的最新微博
+#define STATUSES_HOME_TIMELINE @"https://api.weibo.com/2/statuses/home_timeline.json"
+
+//获取@当前用户的最新微博
+#define STATUSES_MENTIONS @"https://api.weibo.com/2/statuses/mentions.json"
+
+//发布一条微博信息
+#define STATUSES_UPDATA  @"https://api.weibo.com/2/statuses/update.json"
+
+//对一条微博进行评论
+#define COMMENTS_CREATE @"https://api.weibo.com/2/comments/create.json"
+
+//获取当前用户最新的包括发送的接收的评论
+#define COMMENTS_TIMELINE @"https://api.weibo.com/2/comments/timeline.json"
+
+//根据评论ID批量返回评论信息
+#define COMMENTS_SHOW_BATCH @"https://api.weibo.com/2/comments/show_batch.json"
+
+//转发一条微博
+#define STATUSES_REPOST @"https://api.weibo.com/2/statuses/repost.json"
+
+//当前登录用户发出的评论
+#define COMMENTS_BY_ME @"https://api.weibo.com/2/comments/by_me.json"
+
+//关注一个用户
+#define FRIENGSHIPS_CREATE @"https://api.weibo.com/2/friendships/create.json"
+
+//取消关注一个用户
+#define FRIENGSHIPS_DESTROY @"https://api.weibo.com/2/friendships/destroy.json"
+
+//批量获取用户的粉丝数、关注数、微博数
+#define USERS_COUNTS @"https://api.weibo.com/2/users/counts.json"
+
+//获取用户的关注列表
+#define FRIENGSHIPS_FRIENDS @"https://api.weibo.com/2/friendships/friends.json"
+
+//获取用户的粉丝列表
+#define FRIENGSHIPS_FOLLOWERS @"https://api.weibo.com/2/friendships/followers.json"
+
+//获取某个用户的各种消息未读数
+#define REMIND_UNREAD @"https://rm.api.weibo.com/2/remind/unread_count.json"
+
+//获取当前登录用户及其所关注用户的最新微博
+#define STATUSES_FRIENDS_TIMELINES @"https://api.weibo.com/2/statuses/friends_timeline.json"
+
+//根据微博ID返回某条微博的评论列表
+#define COMMENTS_SHOW @"https://api.weibo.com/2/comments/show.json"
+
+//获取当前登录用户信息
+#define USERS_SHOW @"https://api.weibo.com/2/users/show.json"
+
+//通过用户个性域名获取用户信息
+#define USERS_DOMAIN_SHOW @"https://api.weibo.com/2/users/domain_show.json"
+
+//获取官方表情
+#define WEIBO_EMOTIONS @"https://api.weibo.com/2/emotions.json"
+
+//根据IP地址返回地理信息坐标
+#define LOCATION_GEO_IP_TO_GEO @"https://api.weibo.com/2/location/geo/ip_to_geo.json"
+
+//获取附近位置发微博的人
+#define PLACE_NEARBY_USERS @"https://api.weibo.com/2/place/nearby/users.json"
+
+#endif

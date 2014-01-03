@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>New item</key>
+	<array>
+		<string>草稿箱</string>
+	</array>
+	<key>New item - 2</key>
+	<array>
+		<string>账号管理</string>
+	</array>
+	<key>New item - 3</key>
+	<array>
+		<string>主题</string>
+	</array>
+	<key>New item - 4</key>
+	<array>
+		<string>消息提醒</string>
+		<string>通用设置</string>
+		<string>隐私与安全</string>
+	</array>
+	<key>New item - 5</key>
+	<array>
+		<string>意见反馈</string>
+		<string>关于微博</string>
+	</array>
+</dict>
+</plist>

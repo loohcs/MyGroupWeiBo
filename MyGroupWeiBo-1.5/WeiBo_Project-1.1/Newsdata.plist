@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>多设备管理</key>
+	<array>
+		<string>多设备管理</string>
+	</array>
+	<key>New item</key>
+	<array>
+		<string>获取新消息 </string>
+	</array>
+	<key>消息提醒</key>
+	<array>
+		<string>@我提醒</string>
+		<string>评论提醒</string>
+		<string>私信提醒</string>
+		<string>新粉丝提醒</string>
+		<string>通知提醒</string>
+	</array>
+	<key>推送设置</key>
+	<array>
+		<string>推送通知</string>
+		<string>免打扰时间         每天22:00-次日08:00</string>
+	</array>
+</dict>
+</plist>

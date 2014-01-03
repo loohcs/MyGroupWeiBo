@@ -29,8 +29,6 @@
 		3E947523184740DB00C28A41 /* HomeViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3E9474E7184740DB00C28A41 /* HomeViewController.xib */; };
 		3E947524184740DB00C28A41 /* HotWeiboViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E9474E9184740DB00C28A41 /* HotWeiboViewController.m */; };
 		3E947525184740DB00C28A41 /* HotWeiboViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3E9474EA184740DB00C28A41 /* HotWeiboViewController.xib */; };
-		3E947526184740DB00C28A41 /* MessageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E9474EC184740DB00C28A41 /* MessageViewController.m */; };
-		3E947527184740DB00C28A41 /* MessageViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3E9474ED184740DB00C28A41 /* MessageViewController.xib */; };
 		3E947528184740DB00C28A41 /* MoreViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E9474EF184740DB00C28A41 /* MoreViewController.m */; };
 		3E947529184740DB00C28A41 /* MoreViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3E9474F0184740DB00C28A41 /* MoreViewController.xib */; };
 		3E94752A184740DB00C28A41 /* NewsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E9474F2184740DB00C28A41 /* NewsViewController.m */; };
@@ -2761,6 +2759,8 @@
 		3EDB6B07185EB09E003BD734 /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 3EDB6B06185EB09E003BD734 /* Reachability.m */; };
 		3EDB6B0A185F1E6E003BD734 /* personalBackground.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 3EDB6B09185F1E6E003BD734 /* personalBackground.jpg */; };
 		3EDB6B0C185F1ED9003BD734 /* 1.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 3EDB6B0B185F1ED9003BD734 /* 1.jpg */; };
+		3EDEBA54185FE096006CCD43 /* MessageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3EDEBA52185FE096006CCD43 /* MessageViewController.m */; };
+		3EDEBA55185FE096006CCD43 /* MessageViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3EDEBA53185FE096006CCD43 /* MessageViewController.xib */; };
 		3EE5DE021856B7C000C66D02 /* DateHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 3EE5DDF81856B7C000C66D02 /* DateHelper.m */; };
 		3EE5DE031856B7C000C66D02 /* URLEncode.m in Sources */ = {isa = PBXBuildFile; fileRef = 3EE5DDFA1856B7C000C66D02 /* URLEncode.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		3EE5DE041856B7C000C66D02 /* blueArrow.png in Resources */ = {isa = PBXBuildFile; fileRef = 3EE5DDFC1856B7C000C66D02 /* blueArrow.png */; };
@@ -3105,9 +3105,6 @@
 		3E9474E8184740DB00C28A41 /* HotWeiboViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HotWeiboViewController.h; sourceTree = "<group>"; };
 		3E9474E9184740DB00C28A41 /* HotWeiboViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HotWeiboViewController.m; sourceTree = "<group>"; };
 		3E9474EA184740DB00C28A41 /* HotWeiboViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = HotWeiboViewController.xib; sourceTree = "<group>"; };
-		3E9474EB184740DB00C28A41 /* MessageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageViewController.h; sourceTree = "<group>"; };
-		3E9474EC184740DB00C28A41 /* MessageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageViewController.m; sourceTree = "<group>"; };
-		3E9474ED184740DB00C28A41 /* MessageViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MessageViewController.xib; sourceTree = "<group>"; };
 		3E9474EE184740DB00C28A41 /* MoreViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MoreViewController.h; sourceTree = "<group>"; };
 		3E9474EF184740DB00C28A41 /* MoreViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MoreViewController.m; sourceTree = "<group>"; };
 		3E9474F0184740DB00C28A41 /* MoreViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MoreViewController.xib; sourceTree = "<group>"; };
@@ -5862,6 +5859,9 @@
 		3EDB6B06185EB09E003BD734 /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
 		3EDB6B09185F1E6E003BD734 /* personalBackground.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = personalBackground.jpg; sourceTree = "<group>"; };
 		3EDB6B0B185F1ED9003BD734 /* 1.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = 1.jpg; sourceTree = "<group>"; };
+		3EDEBA51185FE096006CCD43 /* MessageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageViewController.h; sourceTree = "<group>"; };
+		3EDEBA52185FE096006CCD43 /* MessageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageViewController.m; sourceTree = "<group>"; };
+		3EDEBA53185FE096006CCD43 /* MessageViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MessageViewController.xib; sourceTree = "<group>"; };
 		3EE5DDF71856B7C000C66D02 /* DateHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DateHelper.h; sourceTree = "<group>"; };
 		3EE5DDF81856B7C000C66D02 /* DateHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DateHelper.m; sourceTree = "<group>"; };
 		3EE5DDF91856B7C000C66D02 /* URLEncode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = URLEncode.h; sourceTree = "<group>"; };
@@ -6622,9 +6622,9 @@
 		3E9475601847490000C28A41 /* 信息浏览主页 */ = {
 			isa = PBXGroup;
 			children = (
-				3E9474EB184740DB00C28A41 /* MessageViewController.h */,
-				3E9474EC184740DB00C28A41 /* MessageViewController.m */,
-				3E9474ED184740DB00C28A41 /* MessageViewController.xib */,
+				3EDEBA51185FE096006CCD43 /* MessageViewController.h */,
+				3EDEBA52185FE096006CCD43 /* MessageViewController.m */,
+				3EDEBA53185FE096006CCD43 /* MessageViewController.xib */,
 			);
 			name = "信息浏览主页";
 			sourceTree = "<group>";
@@ -10040,7 +10040,6 @@
 				3E947521184740DB00C28A41 /* GameViewController.xib in Resources */,
 				3E947523184740DB00C28A41 /* HomeViewController.xib in Resources */,
 				3E947525184740DB00C28A41 /* HotWeiboViewController.xib in Resources */,
-				3E947527184740DB00C28A41 /* MessageViewController.xib in Resources */,
 				3E947529184740DB00C28A41 /* MoreViewController.xib in Resources */,
 				3E94752B184740DB00C28A41 /* NewsViewController.xib in Resources */,
 				3E94752D184740DB00C28A41 /* OpinionViewController.xib in Resources */,
@@ -12994,6 +12993,7 @@
 				3EEBD59C185AF8E6002D42E3 /* SquareViewController.xib in Resources */,
 				3EDB6B0A185F1E6E003BD734 /* personalBackground.jpg in Resources */,
 				3EDB6B0C185F1ED9003BD734 /* 1.jpg in Resources */,
+				3EDEBA55185FE096006CCD43 /* MessageViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -13022,7 +13022,6 @@
 				3E947520184740DB00C28A41 /* GameViewController.m in Sources */,
 				3E947522184740DB00C28A41 /* HomeViewController.m in Sources */,
 				3E947524184740DB00C28A41 /* HotWeiboViewController.m in Sources */,
-				3E947526184740DB00C28A41 /* MessageViewController.m in Sources */,
 				3E947528184740DB00C28A41 /* MoreViewController.m in Sources */,
 				3E94752A184740DB00C28A41 /* NewsViewController.m in Sources */,
 				3E94752C184740DB00C28A41 /* OpinionViewController.m in Sources */,
@@ -13082,6 +13081,7 @@
 				3EEBD59B185AF8E6002D42E3 /* SquareViewController.m in Sources */,
 				3EEBD5AA185B0A88002D42E3 /* GetIPToGeo.m in Sources */,
 				3EDB6B07185EB09E003BD734 /* Reachability.m in Sources */,
+				3EDEBA54185FE096006CCD43 /* MessageViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
