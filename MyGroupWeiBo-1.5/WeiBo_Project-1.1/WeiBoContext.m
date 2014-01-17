@@ -30,7 +30,7 @@
         _thumbnail_pic = [dic objectForKey:@"thumbnail_pic"];
         _thumbnailImage = [[UIImage alloc] init];
         _bmiddle_pic = [dic objectForKey:@"bmiddle_pic"];
-        _bmiddleImage = [[UIImage alloc] init];
+//        _bmiddleImage = [[UIImage alloc] init];
         _original_pic = [dic objectForKey:@"original_pic"];
         _originalImage = [[UIImage alloc] init];
         

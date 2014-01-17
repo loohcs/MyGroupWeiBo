@@ -49,7 +49,7 @@
 
 - (void)initWithTabbar
 {
-    UIImageView *imageView = [[UIImageView alloc]initWithFrame:CGRectMake(0, 568-49, 320, 49)];
+    UIImageView *imageView = [[UIImageView alloc]initWithFrame:CGRectMake(0, SCREEN_HEIGHT-49, 320, 49)];
     imageView.image = [UIImage imageNamed:@"tabbar_background"];
     [self.view addSubview:imageView];
     NSArray *btnImageName = [NSArray arrayWithObjects:@"tabbar_home",@"tabbar_message_center",@"tabbar_profile",@"tabbar_discover",@"tabbar_more",nil];
@@ -58,7 +58,7 @@
     {
     
         UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
-        btn.frame = CGRectMake(0+64*i, 568-49, 64, 49);
+        btn.frame = CGRectMake(0+64*i, SCREEN_HEIGHT-49, 64, 49);
         [btn setImage:[UIImage imageNamed:[btnImageName objectAtIndex:i]] forState:UIControlStateNormal];
         [btn setImage:[UIImage imageNamed:[btnHImageName objectAtIndex:i]] forState:UIControlStateHighlighted];
         btn.tag = i;
